@@ -1,0 +1,221 @@
+[
+    {
+        "symbol": "RDNBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-02-16 17:50","type":"hunter","certainty":1}
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ARDRBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-11-01 01:50","type":"hunter","certainty":1}
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "BCDBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-07-09 15:35","type":"hunter","certainty":1},
+                        {"end": "2018-09-05 06:30","type":"hunter","certainty":1}
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ARNBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-07-09 14:10","type":"hunter","certainty":1},
+                        {"end": "2019-03-25 13:20","type":"hunter","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "MCOBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-03-15 06:00","type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "TNTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-05-21 16:45","type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "GASBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-02-17 00:10","type":"hunter","certainty":1},
+                        {"end": "2018-01-18 10:40","type":"none","certainty":1},
+                        {"end": "2018-02-04 19:20","type":"none","certainty":1},
+                        {"end": "2018-03-12 22:55","type":"none","certainty":1},
+                        {"end": "2018-05-04 00:55","type":"none","certainty":1},
+                        {"end": "2018-04-16 16:15","type":"none","certainty":1},
+                        {"end": "2018-08-17 00:15","type":"none","certainty":1},
+                        {"end": "2018-11-29 14:45","type":"none","certainty":1},
+                        {"end": "2019-05-05 02:45","type":"none","certainty":1},
+                        {"end": "2019-06-26 15:45","type":"none","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "RCNBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-10-27 21:35","type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "THETABTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-11-30 05:30","type":"hunter","certainty":1},
+                        {"end": "2019-05-24 03:00","type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "RLCBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-03-12 16:10","type":"hunter","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "WAVESBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-07-06 12:55","type":"hunter","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "ONTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-02-15 09:30","type":"hunter","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "MANABTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-07-13 06:55","type":"none","certainty":1},
+                        {"end": "2018-07-30 15:35","type":"none","certainty":1},
+                        {"end": "2018-08-17 00:15","type":"none","certainty":1},
+                        {"end": "2018-09-03 08:55","type":"none","certainty":1},
+                        {"end": "2018-09-20 17:35","type":"none","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "LINKBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-06-13 17:05","type":"hunter","certainty":1},
+                        {"end": "2018-01-18 10:40","type":"none","certainty":1},
+                        {"end": "2018-03-30 07:35","type":"none","certainty":1},
+                        {"end": "2018-06-07 18:15","type":"none","certainty":1},
+                        {"end": "2019-01-20 16:45","type":"none","certainty":1},
+                        {"end": "2019-02-07 01:25","type":"none","certainty":1},
+                        {"end": "2019-06-26 15:45","type":"none","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "GRSBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-04-17 20:40","type":"hunter","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "DLTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-03-11 20:00","type":"hunter","certainty":1},
+                        {"end": "2019-02-19 15:05","type":"none","certainty":1},
+                        {"end": "2018-02-23 14:15","type":"none","certainty":1},
+                        {"end": "2018-03-12 22:55","type":"none","certainty":1},
+                        {"end": "2018-03-30 07:35","type":"none","certainty":1},
+                        {"end": "2018-04-16 16:15","type":"none","certainty":1},
+                        {"end": "2018-05-04 00:55","type":"none","certainty":1},
+                        {"end": "2018-05-21 09:35","type":"none","certainty":1},
+                        {"end": "2018-06-07 18:15","type":"none","certainty":1},
+                        {"end": "2018-06-25 02:55","type":"none","certainty":1},
+                        {"end": "2018-07-13 06:55","type":"none","certainty":1},
+                        {"end": "2018-08-17 00:15","type":"none","certainty":1},
+                        {"end": "2018-09-20 17:35","type":"none","certainty":1},
+                        {"end": "2018-10-08 02:15","type":"none","certainty":1},
+                        {"end": "2019-01-20 16:45","type":"none","certainty":1},
+                        {"end": "2019-05-05 02:45","type":"none","certainty":1},
+                        {"end": "2019-05-05 02:45","type":"none","certainty":1}
+                    ]
+            }
+    },
+    {
+        "symbol": "BATBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-07-23 09:40","type":"hunter","certainty":1}
+                    ]
+            }
+    }
+]

@@ -1,0 +1,817 @@
+[
+    {
+        "symbol": "BCDBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-01-13 04:55","type":"ma","certainty":2},
+                        {"end": "2018-01-17 06:45","type":"ma","certainty":2},
+                        {"end": "2018-01-22 08:25","type":"hunter","certainty":2},
+                        {"end": "2018-01-24 05:30","type":"hunter","certainty":2},
+                        {"end": "2018-02-01 03:55","type":"hunter","certainty":2},
+                        {"end": "2018-02-04 06:55","type":"ma","certainty":2},
+                        {"end": "2018-02-18 06:35","type":"hunter","certainty":2},
+                        {"end": "2018-03-05 19:45","type":"ma","certainty":2},
+                        {"end": "2018-03-08 22:05","type":"ma","certainty":2},
+                        {"end": "2018-03-15 15:10","type":"hunter","certainty":2},
+                        {"end": "2018-03-26 14:40","type":"hunter","certainty":2},
+                        {"end": "2018-06-04 14:15","type":"hunter","certainty":2},
+                        {"end": "2018-07-01 19:30","type":"hunter","certainty":1},
+                        {"end": "2018-07-09 15:35","type":"hunter","certainty":1},
+                        {"end": "2018-08-06 14:55","type":"hunter","certainty":2},
+                        {"end": "2018-09-05 06:30","type":"hunter","certainty":1},
+                        {"end": "2018-09-10 08:10","type":"ma","certainty":2},
+                        {"end": "2018-09-23 02:10","type":"ma","certainty":2},
+                        {"end": "2018-10-23 12:30","type":"ma","certainty":2},
+                        {"end": "2018-11-04 07:45","type":"hunter", "certainty":2},
+                        {"end": "2018-12-20 10:20","type":"hunter", "certainty":1},
+                        {"end": "2019-05-29 13:40","type":"hunter", "certainty":2}
+
+                    ],
+                "15m":
+                    [
+                        {"end": "2019-05-29 13:30","type":"hunter"}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-05-29 13:30","type":"hunter"}
+                    ]
+            }
+
+    },
+   {
+        "symbol": "DLTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-03-11 20:00", "type":"hunter","certainty":1},
+                        {"end": "2018-07-17 22:30", "type":"hunter","certainty":1},
+                        {"end": "2018-09-25 15:30", "type":"hunter","certainty":1},
+                        {"end": "2018-10-02 18:55", "type":"hunter","certainty":1},
+                        {"end": "2018-10-10 08:10", "type":"ma","certainty":1},
+                        {"end": "2018-10-30 20:15", "type":"hunter","certainty":1},
+                        {"end": "2018-11-07 16:35", "type":"hunter","certainty":2},
+                        {"end": "2019-01-07 13:45", "type":"hunter","certainty":2},
+                        {"end": "2019-02-19 15:05", "type":"hunter","certainty":1},
+                        {"end": "2019-03-26 16:05", "type":"hunter","certainty":1},
+                        {"end": "2019-05-05 16:00", "type":"hunter","certainty":1},
+                        {"end": "2019-05-10 06:00", "type":"ma","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end": "2018-10-02 18:30","type":"hunter"},
+                        {"end": "2018-10-10 08:00","type":"hunter"},
+                        {"end": "2019-01-07 13:30","type":"hunter"}
+
+                    ]
+            }
+    },
+    {
+        "symbol": "TNTBTC",
+        "patterns":
+            {
+
+                "1m":
+                    [
+                        {"end": "2019-06-20 19:59","type":"hunter"},
+                        {"end": "2019-06-25 11:47","type":"line"}
+                    ],
+                "5m":
+                    [
+                        {"end": "2018-01-12 23:40","type":"hunter","certainty":2},
+                        {"end": "2018-01-22 05:05","type":"ma","certainty":1},
+                        {"end": "2018-02-22 19:20","type":"ma","certainty":1},
+                        {"end": "2018-03-13 22:05","type":"hunter","certainty":2},
+                        {"end": "2018-09-15 23:40","type":"ma","certainty":2},
+                        {"end": "2018-09-15 23:40","type":"hunter","certainty":2},
+                        {"end": "2018-09-20 14:00","type":"ma","certainty":2},
+                        {"end": "2018-10-24 20:05","type":"hunter","certainty":2},
+                        {"end": "2018-10-30 13:35","type":"ma","certainty":1},
+                        {"end": "2018-11-08 18:30","type":"ma","certainty":1},
+                        {"end": "2018-12-11 15:50","type":"hunter","certainty":1},
+                        {"end": "2019-03-11 23:35","type":"hunter","certainty":2},
+                        {"end": "2019-03-14 08:00","type":"ma","certainty":2},
+                        {"end": "2019-05-21 16:45","type":"hunter","certainty":1},
+                        {"end": "2019-06-02 15:35","type":"ma","certainty":2},
+                        {"end": "2019-06-19 20:30","type":"ma","certainty":2},
+                        {"end": "2019-06-19 20:30","type":"ma","certainty":2},
+                        {"end": "2019-06-20 19:55","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-01-22 05:00","type":"hunter"},
+                        {"end": "2019-05-21 16:30","type":"hunter"}
+                    ]
+            }
+    },
+    {
+        "symbol": "GASBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-08-27 18:30", "type":"ma","certainty":2},
+                        {"end": "2019-02-17 00:10", "type":"hunter","certainty":1},
+                        {"end": "2019-05-23 02:05", "type":"hunter","certainty":2},
+                        {"end": "2019-06-08 00:05", "type":"hunter","certainty":1},
+                        {"end": "2019-06-22 12:55", "type":"hunter","certainty":2}
+                    ],
+                "30m":
+                    [
+                        { "end": "2019-02-17 00:00","type":"hunter"},
+                        { "end": "2019-06-22 12:30","type":"rocket"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ONTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-04-03 16:25", "type":"ma","certainty":2},
+                        {"end": "2018-05-03 01:00", "type":"hunter","certainty":1},
+                        {"end": "2018-08-25 15:15", "type":"hunter","certainty":1},
+                        {"end": "2018-10-28 15:25", "type":"hunter","certainty":1},
+                        {"end": "2018-12-21 12:20", "type":"ma","certainty":1},
+                        {"end": "2019-02-15 09:30", "type":"hunter","certainty":1},
+                        {"end": "2019-03-20 15:25", "type":"ma","certainty":1},
+                        {"end": "2019-05-03 09:10", "type":"sr","certainty":1},
+                        {"end": "2019-06-22 12:50", "type":"sr","certainty":1}
+                    ],
+                "30m":
+                    [
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ARDRBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-11-01 01:50", "type":"hunter","certainty":1},
+                        {"end": "2018-12-22 01:45", "type":"hunter","certainty":1},
+                        {"end": "2019-03-12 09:40", "type":"hunter","certainty":1},
+                        {"end": "2019-04-12 09:40", "type":"hunter","certainty":1},
+                        {"end": "2019-06-07 07:00", "type":"hunter","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end":"2018-11-18 11:30","type":"none"},
+                        {"end":"2018-11-25 07:30","type":"haberci"},
+                        {"end":"2019-03-07 08:00","type":"haberci"},
+                        {"end":"2019-05-15 13:00","type":"haberci"},
+                        {"end":"2019-05-26 04:00","type":"none"},
+                        {"end":"2019-06-07 06:30","type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "WANBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-06-02 08:55","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-02 06:30","type":"hunter" }
+                    ]
+            }
+
+    },
+    {
+        "symbol": "KMDBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-06-22 21:25","type":"hunter","certainty":1},
+                        {"end": "2018-08-03 11:30","type":"hunter","certainty":1},
+                        {"end": "2018-09-03 16:25","type":"hunter","certainty":1},
+                        {"end": "2019-02-11 13:15","type":"hunter","certainty":2},
+                        {"end": "2019-03-15 08:55","type":"hunter","certainty":1},
+                        {"end": "2019-04-17 12:50","type":"ma","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-03-13 02:00","type":"hunter"},
+                        {"end": "2019-04-17 12:00","type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "REPBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-07-22 14:25","type":"ma","certainty":1},
+                        {"end": "2018-10-24 00:05","type":"ma","certainty":1},
+                        {"end": "2019-01-14 15:45","type":"ma","certainty":2},
+                        {"end": "2019-03-29 23:45","type":"ma","certainty":2},
+                        {"end": "2019-04-06 12:20","type":"ma","certainty":2},
+                        {"end": "2019-08-05 07:25","type":"hunter","certainty":2}
+
+
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-03-29 23:30","type":"hunter"}
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "NASBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-09-30 12:25","type":"hunter","certainty":2},
+                        {"end": "2018-10-09 03:00","type":"hunter","certainty":2},
+                        {"end": "2019-06-09 02:10", "type":"ma","certainty":1},
+                        {"end": "2019-06-10 04:15", "type":"ma","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-09 02:00", "type":"hunter" }
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "RDNBTC",
+        "patterns":
+            {
+                 "5m":
+                    [
+                        {"end": "2018-12-22 00:05", "type":"ma","certainty":1},
+                        {"end": "2019-02-16 17:50", "type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-01-23 13:00", "type":"hunter" }
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ENJBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-09-28 01:05","type":"hunter","certainty":1},
+                        {"end": "2019-02-25 01:45","type":"hunter","certainty":1},
+                        {"end": "2019-03-02 16:30","type":"hunter","certainty":2},
+                        {"end": "2019-03-08 02:30","type":"ma","certainty":1}
+
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-02-25 01:30","type":"hunter"},
+                        {"end": "2019-03-08 02:00","type":"hunter"}
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "GRSBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-04-17 20:40","type":"hunter","certainty":1},
+                        {"end": "2018-07-26 00:05","type":"hunter","certainty":2},
+                        {"end": "2019-02-07 10:55","type":"ma","certainty":2},
+                        {"end": "2019-03-11 12:55","type":"ma","certainty":2},
+                        {"end": "2019-03-14 11:15","type":"hunter","certainty":1},
+                        {"end": "2019-04-04 10:55","type":"ma","certainty":2},
+                        {"end": "2019-07-29 10:20","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2018-04-17 20:30","type":"hunter"},
+                        {"end": "2019-03-11 12:00","type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "WAVESBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-09-10 09:55","type":"hunter","certainty":1},
+                        {"end": "2018-11-19 14:15","type":"hunter","certainty":1},
+                        {"end": "2019-07-06 12:55","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2018-09-10 09:30","type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "BATBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-04-30 18:55", "type":"ma","certainty":2},
+                        {"end": "2018-07-13 20:00", "type":"ma","certainty":1},
+                        {"end": "2018-07-23 09:40", "type":"hunter","certainty":1},
+                        {"end": "2019-02-06 20:40", "type":"hunter","certainty":1},
+                        {"end": "2019-02-25 23:35", "type":"ma","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-02-06 20:30", "type":"hunter" }
+                    ]
+            }
+
+    },
+    {
+        "symbol": "RVNBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-01-22 10:50","type":"ma","certainty":2},
+                        {"end": "2019-02-09 19:20","type":"ma","certainty":2},
+                        {"end": "2019-04-19 14:10","type":"ma","certainty":1},
+                        {"end": "2019-05-21 05:55","type":"ma","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-01-22 10:30","type":"hunter" }
+                    ]
+            }
+
+    },
+    {
+        "symbol": "THETABTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-06-09 18:00","type":"sr","certainty":1},
+                        {"end": "2018-06-29 22:05","type":"ma","certainty":1},
+                        {"end": "2018-08-23 12:35","type":"ma","certainty":2},
+                        {"end": "2018-11-30 05:30","type":"hunter","certainty":1},
+                        {"end": "2018-11-30 08:35","type":"hunter","certainty":1},
+                        {"end": "2018-12-22 01:15","type":"hunter","certainty":2},
+                        {"end": "2018-12-28 00:15","type":"hunter","certainty":2},
+                        {"end": "2019-01-19 14:00","type":"hunter","certainty":1},
+                        {"end": "2019-05-24 03:00","type":"hunter","certainty":2},
+                        {"end": "2019-05-29 10:40","type":"hunter","certainty":2},
+                        {"end": "2019-07-17 02:20","type":"hunter","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end": "2018-11-30 05:30","type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "MCOBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-06-03 16:00","type":"ma","certainty":1},
+                        {"end": "2018-07-30 04:50","type":"ma","certainty":2},
+                        {"end": "2018-10-22 04:00","type":"hunter","certainty":1},
+                        {"end": "2018-12-24 14:05","type":"ma","certainty":2},
+                        {"end": "2019-02-15 01:05","type":"hunter","certainty":2},
+                        {"end": "2019-03-11 18:40","type":"hunter","certainty":2},
+                        {"end": "2019-03-15 06:00","type":"hunter","certainty":1},
+                        {"end": "2019-04-05 12:50","type":"hunter","certainty":2},
+                        {"end": "2019-06-25 08:05","type":"hunter","certainty":1},
+                        {"end": "2019-07-17 01:10","type":"hunter","certainty":2},
+                        {"end": "2019-07-24 01:45","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-02-15 01:00","type":"hunter" }
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "MANABTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-01-03 12:15","type":"ma","certainty":1},
+                        {"end": "2018-01-22 05:45","type":"hunter","certainty":2},
+                        {"end": "2018-02-04 21:30","type":"ma","certainty":2},
+                        {"end": "2018-02-07 14:10","type":"ma","certainty":1},
+                        {"end": "2018-02-15 13:15","type":"ma","certainty":1},
+                        {"end": "2018-04-22 20:45","type":"hunter","certainty":1},
+                        {"end": "2018-07-17 00:20","type":"hunter","certainty":1},
+                        {"end": "2018-12-03 05:45","type":"ma","certainty":1},
+                        {"end": "2018-12-06 18:45","type":"ma","certainty":2},
+                        {"end": "2019-02-26 07:40","type":"ma","certainty":2},
+                        {"end": "2019-02-26 14:00","type":"hunter","certainty":2},
+                        {"end": "2019-03-08 05:40","type":"hunter","certainty":1},
+                        {"end": "2019-03-28 03:30","type":"ma","certainty":1},
+                        {"end": "2019-05-28 07:40","type":"ma","certainty":1},
+                        {"end": "2019-06-09 03:05","type":"hunter","certainty":2},
+                        {"end": "2019-07-03 17:20","type":"hunter","certainty":1},
+                        {"end": "2019-07-19 10:50","type":"hunter","certainty":2}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-03-28 03:00","type":"hunter" }
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ARNBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-01-05 01:30","type":"hunter","certainty":1},
+                        {"end": "2018-01-13 22:05","type":"hunter","certainty":1},
+                        {"end": "2018-01-22 08:35","type":"hunter","certainty":1},
+                        {"end": "2018-02-07 09:35","type":"ma","certainty":1},
+                        {"end": "2018-02-19 11:45","type":"hunter","certainty":1},
+                        {"end": "2018-02-26 08:10","type":"ma","certainty":1},
+                        {"end": "2018-03-21 06:45","type":"ma","certainty":1},
+                        {"end": "2018-04-21 23:15","type":"ma","certainty":1},
+                        {"end": "2018-07-09 14:10","type":"hunter","certainty":1},
+                        {"end": "2018-07-18 10:05","type":"ma","certainty":1},
+                        {"end": "2018-07-25 06:00","type":"ma","certainty":1},
+                        {"end": "2018-09-16 19:55","type":"ma","certainty":1},
+                        {"end": "2018-10-06 18:50","type":"hunter","certainty":1},
+                        {"end": "2018-11-29 11:30","type":"hunter","certainty":1},
+                        {"end": "2018-12-15 14:25","type":"hunter","certainty":2},
+                        {"end": "2019-01-17 01:10","type":"hunter","certainty":1},
+                        {"end": "2019-02-18 10:15","type":"hunter","certainty":1},
+                        {"end": "2019-03-05 05:35","type":"hunter","certainty":1},
+                        {"end": "2019-03-11 20:05","type":"hunter","certainty":1},
+                        {"end": "2019-03-14 09:00","type":"hunter","certainty":1},
+                        {"end": "2019-03-16 14:55","type":"hunter","certainty":1},
+                        {"end": "2019-03-24 15:20","type":"hunter","certainty":1},
+                        {"end": "2019-03-25 13:20","type":"hunter","certainty":1},
+                        {"end": "2019-05-30 11:20","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2018-01-05 01:30", "type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "POEBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-01-29 15:55","type":"ma","certainty":1},
+                        {"end": "2018-02-11 16:40","type":"ma","certainty":1},
+                        {"end": "2018-02-12 07:45","type":"hunter","certainty":1},
+                        {"end": "2018-02-25 10:45","type":"hunter","certainty":1},
+                        {"end": "2018-03-14 14:45","type":"hunter","certainty":1},
+                        {"end": "2018-04-04 16:30","type":"hunter","certainty":1},
+                        {"end": "2018-04-19 15:25","type":"ma","certainty":1},
+                        {"end": "2018-07-01 18:05","type":"ma","certainty":1},
+                        {"end": "2018-09-25 11:30","type":"hunter","certainty":1},
+                        {"end": "2018-12-05 13:55","type":"hunter","certainty":2},
+                        {"end": "2019-06-15 15:20","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-15 15:00","type":"hunter"}
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "ASTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-01-05 00:00", "type":"ma","certainty":1},
+                        {"end": "2019-01-18 14:00", "type":"hunter","certainty":1},
+                        {"end": "2019-02-07 13:45", "type":"hunter","certainty":1},
+                        {"end": "2019-02-24 03:50", "type":"ma","certainty":1},
+                        {"end": "2019-02-27 08:45", "type":"hunter","certainty":1},
+                        {"end": "2019-03-01 00:05", "type":"hunter","certainty":1},
+                        {"end": "2019-03-27 09:00", "type":"ma","certainty":1},
+                        {"end": "2019-04-10 07:35", "type":"hunter","certainty":1},
+                        {"end": "2019-04-12 08:35", "type":"sr","certainty":1},
+                        {"end": "2019-04-23 04:50", "type":"hunter","certainty":2},
+                        {"end": "2019-05-20 21:15", "type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-19 16:30", "type":"hunter" }
+
+                    ]
+            }
+
+    },
+    {
+        "symbol": "AEBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-03-30 13:05", "type":"ma","certainty":1},
+                        {"end": "2018-06-06 13:15", "type":"hunter","certainty":2},
+                        {"end": "2018-09-29 23:10", "type":"hunter","certainty":1},
+                        {"end": "2018-09-30 21:45", "type":"hunter","certainty":1},
+                        {"end": "2018-10-01 22:15", "type":"hunter","certainty":1},
+                        {"end": "2018-10-10 02:45", "type":"ma","certainty":1},
+                        {"end": "2018-10-14 12:50", "type":"ma","certainty":1},
+                        {"end": "2018-10-17 13:05", "type":"hunter","certainty":1},
+                        {"end": "2018-10-19 23:35", "type":"ma","certainty":1},
+                        {"end": "2018-11-17 18:25", "type":"hunter","certainty":1},
+                        {"end": "2018-11-24 14:15", "type":"ma","certainty":1},
+                        {"end": "2018-11-28 02:40", "type":"ma","certainty":1},
+                        {"end": "2019-01-06 00:25", "type":"ma","certainty":1},
+                        {"end": "2019-01-15 01:55", "type":"hunter","certainty":1},
+                        {"end": "2019-01-15 17:25", "type":"hunter","certainty":1},
+                        {"end": "2019-01-19 08:25", "type":"ma","certainty":1},
+                        {"end": "2019-02-27 16:15", "type":"ma","certainty":1},
+                        {"end": "2019-04-20 03:00", "type":"ma","certainty":1},
+                        {"end": "2019-05-06 01:30", "type":"ma","certainty":1},
+                        {"end": "2019-05-28 07:35", "type":"hunter","certainty":2},
+                        {"end": "2019-06-02 14:40", "type":"ma","certainty":1},
+                        {"end": "2019-06-05 12:00", "type":"hunter","certainty":2},
+                        {"end": "2019-06-10 04:55", "type":"hunter","certainty":2},
+                        {"end": "2019-06-24 02:20", "type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-24 02:00", "type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "VETBTC",
+        "patterns":
+            {
+                "1m":
+                    [
+                        {"end": "2019-06-25 03:13","type":"hunter"}
+                    ],
+                "5m":
+                    [
+                        {"end": "2018-08-16 07:25", "type":"ma","certainty":1},
+                        {"end": "2019-03-12 10:05", "type":"ma","certainty":1},
+                        {"end": "2019-06-25 03:15", "type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-25 03:00","type":"hunter"}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "OAXBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2019-08-04 07:30", "type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "CMTBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-01-28 18:10", "type":"hunter","certainty":1},
+                        {"end": "2018-03-06 18:10", "type":"hunter","certainty":1},
+                        {"end": "2018-10-04 17:55", "type":"hunter","certainty":1},
+                        {"end": "2019-01-16 07:45", "type":"hunter","certainty":1},
+                        {"end": "2019-08-04 01:55", "type":"hunter","certainty":1},
+                        {"end": "2019-08-19 08:45", "type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "RLCBTC",
+        "patterns":
+            {
+                "1m":
+                    [
+                        {"end": "2019-06-26 14:57","type":"ma"}
+                    ],
+                "5m":
+                    [
+                        {"end": "2018-03-24 11:20","type":"hunter","certainty":1},
+                        {"end": "2018-03-25 17:35","type":"hunter","certainty":1},
+                        {"end": "2018-05-16 08:50","type":"hunter","certainty":1},
+                        {"end": "2018-09-07 07:20","type":"hunter","certainty":2},
+                        {"end": "2018-09-18 12:20","type":"hunter","certainty":1},
+                        {"end": "2018-09-30 18:05","type":"hunter","certainty":1},
+                        {"end": "2018-10-08 06:20","type":"hunter","certainty":1},
+                        {"end": "2018-10-21 14:45","type":"hunter","certainty":2},
+                        {"end": "2018-11-01 15:35","type":"hunter","certainty":1},
+                        {"end": "2018-11-27 06:10","type":"hunter","certainty":2},
+                        {"end": "2018-11-28 13:55","type":"hunter","certainty":1},
+                        {"end": "2019-02-03 11:00","type":"hunter","certainty":1},
+                        {"end": "2019-02-25 10:55","type":"hunter","certainty":1},
+                        {"end": "2019-02-27 10:25","type":"hunter","certainty":1},
+                        {"end": "2019-03-12 16:10","type":"hunter","certainty":1},
+                        {"end": "2019-03-22 06:55","type":"hunter","certainty":1},
+                        {"end": "2019-03-26 10:15","type":"hunter","certainty":1},
+                        {"end": "2019-06-15 15:05","type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                        {"end": "2019-06-27 06:00","type":"hunter"}
+                    ]
+            }
+
+    },
+
+    {
+        "symbol": "LINKBTC",
+        "patterns":
+            {
+                "1m":
+                    [
+                        {"end": "2019-06-13 17:05","type":"hunter"}
+                    ],
+                "5m":
+                    [
+                        {"end": "2018-10-05 12:10","type":"ma","certainty":2},
+                        {"end": "2018-10-05 12:10","type":"ma","certainty":2},
+                        {"end": "2018-10-23 00:40","type":"hunter","certainty":1},
+                        {"end": "2018-12-19 16:00","type":"hunter","certainty":1},
+                        {"end": "2019-02-17 07:55","type":"hunter","certainty":1},
+                        {"end": "2019-05-14 14:50","type":"hunter","certainty":1},
+                        {"end": "2019-05-20 22:35","type":"ma","certainty":1},
+                        {"end": "2019-06-13 17:05","type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+
+    {
+        "symbol": "RCNBTC",
+        "patterns":
+            {
+                "1m":
+                    [
+                        {"end": "2018-06-14 15:44","type":"sr"},
+                        {"end": "2018-07-23 12:46","type":"ma"},
+                        {"end": "2019-03-12 10:19","type":"rocket"},
+                        {"end": "2019-03-25 13:55","type":"hunter"},
+                        {"end": "2019-05-02 09:39","type":"rocket"},
+                        {"end": "2019-05-10 13:29","type":"ma"},
+                        {"end": "2019-05-14 11:31","type":"rocket"},
+                        {"end": "2019-07-10 16:00","type":"line"}
+                    ],
+                "5m":
+                    [
+                        {"end": "2018-01-17 16:50","type":"ma","certainty":2},
+                        {"end": "2018-02-11 15:05","type":"ma","certainty":1},
+                        {"end": "2018-02-21 12:40","type":"hunter","certainty":1},
+                        {"end": "2018-03-15 02:30","type":"hunter","certainty":1},
+                        {"end": "2018-03-21 08:50","type":"ma","certainty":1},
+                        {"end": "2018-03-25 13:50","type":"hunter","certainty":1},
+                        {"end": "2018-04-02 02:00","type":"ma","certainty":1},
+                        {"end": "2018-04-07 08:20","type":"hunter","certainty":1},
+                        {"end": "2018-04-18 03:00","type":"hunter","certainty":1},
+                        {"end": "2018-04-28 03:20","type":"hunter","certainty":2},
+                        {"end": "2018-06-14 15:45","type":"hunter","certainty":1},
+                        {"end": "2018-07-23 12:50","type":"hunter","certainty":1},
+                        {"end": "2018-09-18 11:55","type":"hunter","certainty":1},
+                        {"end": "2018-10-27 21:35","type":"hunter","certainty":1},
+                        {"end": "2019-02-21 20:15","type":"hunter","certainty":1},
+                        {"end": "2019-03-12 10:15","type":"hunter","certainty":1},
+                        {"end": "2019-05-10 13:30","type":"hunter","certainty":1}
+                    ]
+            }
+
+    },
+    {
+        "symbol": "NANOBTC",
+        "patterns":
+            {
+                "5m":
+                    [
+                        {"end": "2018-10-16 14:30","type":"ma","certainty":1},
+                        {"end": "2019-01-23 02:00","type":"hunter","certainty":1},
+                        {"end": "2019-03-31 09:25","type":"hunter","certainty":1},
+                        {"end": "2019-04-09 00:25","type":"ma","certainty":1},
+                        {"end": "2019-04-22 06:25","type":"hunter","certainty":1},
+                        {"end": "2019-05-21 04:55","type":"ma","certainty":1},
+                        {"end": "2019-06-07 11:55","type":"ma","certainty":1},
+                        {"end": "2019-06-13 02:20","type":"hunter","certainty":1},
+                        {"end": "2019-06-19 21:05","type":"hunter","certainty":1},
+                        {"end": "2019-07-17 16:05","type":"hunter","certainty":1}
+                    ],
+                "1m":
+                    [
+                        {"end": "2019-01-23 02:01","type":"line"},
+                        {"end": "2019-03-12 16:29","type":"hunter"},
+                        {"end": "2019-03-14 09:32","type":"hunter"},
+                        {"end": "2019-03-31 09:25","type":"hunter"},
+                        {"end": "2019-04-09 00:24","type":"ma"},
+                        {"end": "2019-04-09 18:38","type":"line"},
+                        {"end": "2019-04-22 06:28","type":"rocket"},
+                        {"end": "2019-05-21 04:58","type":"ma"},
+                        {"end": "2019-05-24 06:37","type":"ma"},
+                        {"end": "2019-05-27 16:11","type":"ma"},
+                        {"end": "2019-05-27 21:20","type":"rocket"},
+                        {"end": "2019-06-07 11:58","type":"ma"},
+                        {"end": "2019-06-13 02:22","type":"line"},
+                        {"end": "2019-06-15 15:47","type":"sr"},
+                        {"end": "2019-06-16 08:36","type":"sr"},
+                        {"end": "2019-06-19 21:09","type":"ma"},
+                        {"end": "2019-06-21 02:16","type":"sr"},
+                        {"end": "2019-06-21 23:48","type":"sr"},
+                        {"end": "2019-06-22 10:01","type":"sr"},
+                        {"end": "2019-06-26 20:28","type":"ma"},
+                        {"end": "2019-06-29 01:55","type":"ma"},
+                        {"end": "2019-07-17 16:09","type":"line"}
+                    ]
+            }
+
+    },
+   {
+        "symbol": "NEOBTC",
+        "patterns":
+            {
+                "1m":
+                    [
+                        {"end": "2019-01-06 15:05", "type":"hunter","certainty":1},
+                        {"end": "2019-01-07 00:05", "type":"ma","certainty":1},
+                        {"end": "2019-03-14 13:51", "type":"ma","certainty":1},
+                        {"end": "2019-04-29 09:04", "type":"rocket" },
+                        {"end": "2019-05-20 13:59", "type":"ma"},
+                        {"end": "2019-06-10 04:44", "type":"hunter" },
+                        {"end": "2019-06-22 12:48", "type":"hunter" },
+                        {"end": "2019-06-25 09:15", "type":"hunter" }
+                    ],
+                "5m":
+                    [
+                        {"end": "2018-02-02 12:50", "type":"hunter","certainty":2},
+                        {"end": "2018-03-19 23:05", "type":"hunter","certainty":2},
+                        {"end": "2018-04-11 16:05", "type":"hunter","certainty":2},
+                        {"end": "2018-05-06 00:45", "type":"hunter","certainty":2},
+                        {"end": "2018-05-14 11:20", "type":"hunter","certainty":3},
+                        {"end": "2018-09-28 03:30", "type":"hunter","certainty":1},
+                        {"end": "2018-10-17 14:05", "type":"ma","certainty":1},
+                        {"end": "2018-10-18 07:35", "type":"ma","certainty":1},
+                        {"end": "2018-10-22 14:50", "type":"hunter","certainty":3},
+                        {"end": "2018-11-01 21:10", "type":"ma","certainty":1},
+                        {"end": "2018-11-07 00:05", "type":"hunter","certainty":2},
+                        {"end": "2018-12-16 02:10", "type":"hunter","certainty":2},
+                        {"end": "2018-12-23 10:00", "type":"ma","certainty":1},
+                        {"end": "2019-01-06 15:05", "type":"hunter","certainty":3},
+                        {"end": "2019-01-14 15:05", "type":"hunter","certainty":2},
+                        {"end": "2019-01-19 10:00", "type":"hunter","certainty":2},
+                        {"end": "2019-01-19 16:45", "type":"hunter","certainty":2},
+                        {"end": "2019-02-02 11:45", "type":"hunter","certainty":2},
+                        {"end": "2019-02-08 08:50", "type":"hunter","certainty":2},
+                        {"end": "2019-02-10 05:20", "type":"hunter","certainty":2},
+                        {"end": "2019-03-14 13:50", "type":"ma","certainty":1},
+                        {"end": "2019-04-29 09:00", "type":"hunter","certainty":1},
+                        {"end": "2019-05-20 14:20", "type":"ma","certainty":1},
+                        {"end": "2019-06-10 04:40", "type":"hunter","certainty":1},
+                        {"end": "2019-06-22 12:45", "type":"hunter","certainty":1}
+                    ],
+                "30m":
+                    [
+                    ]
+            }
+
+    }
+]
