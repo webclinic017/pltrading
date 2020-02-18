@@ -91,7 +91,7 @@ def backtest():
 		if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
 			data_base = read_csv("/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"+symbol+".csv") #
 		else:
-			data_base = read_csv("home/ubuntu/datacollecttemp/"+symbol+".csv")
+			data_base = read_csv("home/ubuntu/datacollect/"+symbol+".csv")
 		df = DataFrame(data_base)
 		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
 		# df = DataFrame(data_base, columns=['symbol','date','price_change','price_change_percent','last_price','best_bid_price',
