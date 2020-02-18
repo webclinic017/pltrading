@@ -32,6 +32,9 @@ pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
 pd.options.mode.chained_assignment = None
 
+path = "/home/ubuntu/datacollect/"
+if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
+	path = "/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"
 
 datatype ="local"
 transaction_fee = 0.00125
@@ -66,11 +69,7 @@ def plot_symbols():
 
 def backtest():
 	SYMBOLS = []
-	dir = ""
-	if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-		dir = os.listdir( "/Users/apple/Desktop/dev/projectlife/data/ticker/")
-	else:
-		dir = os.listdir( "/home/ubuntu/datacollect/")
+	dir = os.listdir(path)
 	for s in dir:
 		if ".py" not in s:
 	 		SYMBOLS.append(s.split(".csv")[0])
@@ -88,10 +87,7 @@ def backtest():
 		entry_price = 0
 		buy_index = 0
 		data_base = ""
-		if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-			data_base = read_csv("/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"+symbol+".csv") #
-		else:
-			data_base = read_csv("home/ubuntu/datacollect/"+symbol+".csv")
+		data_base = read_csv(path+symbol+".csv") #
 		df = DataFrame(data_base)
 		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
 		# df = DataFrame(data_base, columns=['symbol','date','price_change','price_change_percent','last_price','best_bid_price',
