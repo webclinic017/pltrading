@@ -19,7 +19,6 @@ import matplotlib.dates as mdates
 import numpy as np
 import time
 import json
-import talib
 import collections
 from pyod.models.cblof import CBLOF
 from pyod.models.feature_bagging import FeatureBagging
