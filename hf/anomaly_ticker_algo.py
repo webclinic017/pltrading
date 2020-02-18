@@ -90,7 +90,7 @@ def backtest():
 		buy_index = 0
 		data_base = ""
 		if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-			data_base = read_csv("/Users/apple/Desktop/dev/projectlife/data/ticker/"+symbol+".csv") #
+			data_base = read_csv("/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"+symbol+".csv") #
 		else:
 			data_base = read_csv("home/ubuntu/datacollecttemp/"+symbol+".csv")
 		df = DataFrame(data_base)
@@ -156,22 +156,22 @@ def backtest():
 				sell_cond  =(last['last_sma600'] < prev1['last_sma600'])
 				if buy_mode and (buy_cond1 or buy_cond2):
 					if buy_cond1:
-						print("buy cond 1 working..")
+						printLog("buy cond 1 working..")
 					else:
-						print("buy cond 2 working..")
+						printLog("buy cond 2 working..")
 					buy_index = i
 					action = BUY
 					entry_price =  current_price
 					entry_tick = current_tick
 					quantity = balance / entry_price
 					buy_mode = False
-					print("##### TRADE " +  str(trade_count) + " #####")
-					print("BUY: " + str(quantity) + " " +symbol+" for "+ str(entry_price) + " at " +  str(last.date))
+					printLog("##### TRADE " +  str(trade_count) + " #####")
+					printLog("BUY: " + str(quantity) + " " +symbol+" for "+ str(entry_price) + " at " +  str(last.date))
 					fragment_tmp = df.iloc[i-window_size:i+20,:]
 					fragment_tmp = detect_anomaly(fragment_tmp)
-					print(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
-					print("20 after----->>>>>>>")
-					print(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+					printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+					printLog("20 after----->>>>>>>")
+					printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
 					#pdb.set_trace()
 				elif not buy_mode and sell_cond:
 					action = SELL
@@ -181,23 +181,23 @@ def backtest():
 					entry_price = 0
 					trade_count += 1
 					buy_mode = True
-					print("SELL: " + str(quantity) + " " +symbol+" for "+ str(exit_price) + " at " +  str(last.date))
-					print("PROFIT: " + str(profit*100))
-					print("BALANCE: " + str(balance))
+					printLog("SELL: " + str(quantity) + " " +symbol+" for "+ str(exit_price) + " at " +  str(last.date))
+					printLog("PROFIT: " + str(profit*100))
+					printLog("BALANCE: " + str(balance))
 				else:
 					action = HOLD
 
 				trade_history.append((action, current_tick, current_price, balance, profit))
 
 				if i % 1000 == 0:
-					print(symbol+"-"+str(row['index']))
+					printLog(symbol+"-"+str(row['index']))
 
 				if (current_tick > len(df)-1):
 					results[symbol] = {'balance':np.array([balance]), "trade_history":trade_history, "trade_count":trade_count }
-					print("**********************************")
-					print("TOTAL BALANCE FOR "+symbol +": "+ str(balance))
-					print("TRADE COUNT FOR "+symbol +": "+ str(trade_count))
-					print("**********************************")
+					printLog("**********************************")
+					printLog("TOTAL BALANCE FOR "+symbol +": "+ str(balance))
+					printLog("TRADE COUNT FOR "+symbol +": "+ str(trade_count))
+					printLog("**********************************")
 					#plot_buy_sell(trade_history)
 
 
@@ -270,6 +270,10 @@ def print_df(df):
 	with pd.option_context('display.max_rows', None):
 		print(df)
 
+def printLog(*args, **kwargs):
+    print(*args, **kwargs)
+    with open('output.out','a') as file:
+        print(*args, **kwargs, file=file)
 
 if __name__ == '__main__':
 	#plot_symbols()
