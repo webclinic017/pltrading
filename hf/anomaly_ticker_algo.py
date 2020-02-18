@@ -7,6 +7,7 @@ from pandas import DataFrame
 from pandas import concat
 from pandas import read_csv
 from pandas import datetime
+import platform
 import pandas as pd
 import pdb
 import matplotlib.pyplot as plt
@@ -31,7 +32,7 @@ from datetime import datetime, timedelta
 pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
 pd.options.mode.chained_assignment = None
-import platform
+
 
 datatype ="local"
 transaction_fee = 0.00125
