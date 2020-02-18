@@ -11,7 +11,8 @@ import pandas as pd
 import pdb
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.use("macOSX")
+if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
+	matplotlib.use("macOSX")
 from mpl_finance import candlestick_ohlc
 import matplotlib.dates as mdates
 import numpy as np
