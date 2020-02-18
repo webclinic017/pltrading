@@ -15,7 +15,9 @@ disk usage -------------> du -chd 1 | sort -h
 delete files ---> find . -type f -iname \*.jpg -delete
 
 
-copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/datacollect /Users/apple/Desktop/dev
+copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/datacollect /Users/apple/Desktop/dev/projectlife/data/newticker
+
+
 
 
 
