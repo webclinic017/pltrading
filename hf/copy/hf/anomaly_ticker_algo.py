@@ -6,7 +6,6 @@ import matplotlib.dates as mdates
 from pandas import DataFrame
 from pandas import concat
 from pandas import read_csv
-import time
 from pandas import datetime
 import platform
 import pandas as pd
@@ -33,10 +32,6 @@ pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
 pd.options.mode.chained_assignment = None
 
-path = "/home/ubuntu/datacollect/"
-if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-	path = "/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"
-	#path = "/Users/apple/Desktop/dev/projectlife/data/ticker/"
 
 datatype ="local"
 transaction_fee = 0.00125
@@ -52,8 +47,8 @@ dateformat_save = '%Y-%m-%d-%H-%M'
 import os
 
 def plot_symbols():
-	SYMBOLS = ["HBARBTC"]
-	# dir = os.listdir(path)
+	SYMBOLS = ["FUNBTC"]
+	# dir = os.listdir( "/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect")
 	# for s in dir:
 	# 	SYMBOLS.append(s.split(".csv")[0])
 	# pdb.set_trace()
@@ -70,11 +65,14 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	temp =   ["ONEBTC", "WRXBTC", "MATICBTC", "GRSBTC", "ZRXBTC", "RVNBTC"]
 	SYMBOLS = []
-	dir = os.listdir(path)
+	dir = ""
+	if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
+		dir = os.listdir( "/Users/apple/Desktop/dev/projectlife/data/ticker/")
+	else:
+		dir = os.listdir( "/home/ubuntu/datacollect/")
 	for s in dir:
-		if ".py" not in s and s not in temp:
+		if ".py" not in s:
 	 		SYMBOLS.append(s.split(".csv")[0])
 	for symbol in SYMBOLS:
 		trade_count = 0
@@ -90,7 +88,10 @@ def backtest():
 		entry_price = 0
 		buy_index = 0
 		data_base = ""
-		data_base = read_csv(path+symbol+".csv") #
+		if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
+			data_base = read_csv("/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"+symbol+".csv") #
+		else:
+			data_base = read_csv("/home/ubuntu/datacollect/"+symbol+".csv")
 		df = DataFrame(data_base)
 		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
 		# df = DataFrame(data_base, columns=['symbol','date','price_change','price_change_percent','last_price','best_bid_price',
@@ -101,22 +102,20 @@ def backtest():
 		df['last_sma100'] = df.last_price.rolling(100).mean()
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
-		df['last_sma600'] = df.last_price.rolling(700).mean()
+		df['last_sma600'] = df.last_price.rolling(600).mean()
 		#df_x = df
-		#df = df.iloc[40000:100000]
+		#df = df.iloc[23756:27257  ,: ]
+		#df = df.iloc[343274:343775,: ]
 		#fragment = detect_anomaly(df)
 		#print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
 		#plot_whole(df_x)
 		#pdb.set_trace()
-		#wrx 54370 #theta 88346 #pivx 56149 wpr 24326 nkn* 13561 lend* 11175 ftm- 26731
-		#ppt* 91933 enj* 75741 fun 17250 fuel* 4280 bqx 16315 stx* 20347 hbar 17410 bcd 58680 go 9538 poe- 6784 gto 56299
 		df = df.reset_index()
 		df = df.fillna(0)
 		window_size = 500
 		found_dates=[]
 		found_list=[]
 		for i, row in df.iterrows():
-			start_time = time.time()
 			current_price = row['last_price']
 			current_tick += 1
 			if i > window_size:
@@ -126,20 +125,12 @@ def backtest():
 				last =  fragment.iloc[-1,:]
 				prev1 =  fragment.iloc[-2,:]
 				prev2 =  fragment.iloc[-3,:]
-				first_35 = fragment.tail(35)
-				first_75 = fragment.tail(100)[:75]
-				last_25 = fragment.tail(100)[-25:]
-				last_25_nodup_label = last_25.drop_duplicates(subset="label_qav")
-				last_25_nodup_score = last_25.drop_duplicates(subset="score_qav")
-				last_25_nodup_change = last_25.drop_duplicates(subset="change_qav")
-				#pdb.set_trace()
-
 				buy_cond1 =  (
-								sum(first_35[-5:]['label_qav'].astype("str").str.contains("1")) == 5 and
-								sum(first_35[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
-								sum(first_35[-5:]['change_qav']) > 0.5 and
-								sum(first_35[-4:]['change_qav']) > 0.02 and
-								sum(first_35[-5:]['change_price']) > 0.2 and
+								sum(fragment.tail(35)[-5:]['label_qav'].astype("str").str.contains("1")) == 5 and
+								sum(fragment.tail(35)[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
+								sum(fragment.tail(35)[-5:]['change_qav']) > 0.5 and
+								sum(fragment.tail(35)[-4:]['change_qav']) > 0.02 and
+								sum(fragment.tail(35)[-5:]['change_price']) > 0.2 and
 								fragment.iloc[-5]["score_qav"] > 0.25 and
 								fragment.iloc[-5]["change_price"] > 0 and
 								fragment.iloc[-5]["change_qav"] > 0 and
@@ -150,20 +141,19 @@ def backtest():
 							)
 
 				buy_cond2 =  (
-								sum(first_75['label_qav'].astype("str").str.contains("0")) == 75 and
-								len(last_25_nodup_score.score_qav) > 2 and
-								(last_25_nodup_score.label_qav.iloc[0] == 0 and last_25_nodup_score.label_qav.iloc[-1] == 1 and last_25_nodup_score.label_qav.iloc[-2] == 1)  and
-								last_25_nodup_score.score_qav.is_monotonic_increasing and
-								last_25_nodup_label.label_qav.is_monotonic_increasing and
-								last_25_nodup_score.change_qav.is_monotonic_increasing and
-								last_25_nodup_change.change_qav.iloc[-1] == last_25_nodup_score.change_qav.iloc[-1] and
-								last_25_nodup_score.change_qav.iloc[-1] > 1 and
-								last_25_nodup_score.score_qav.iloc[0] > 0 and
-								(last_25_nodup_score.change_price >=0).all()
+								sum(fragment.tail(100)[:75]['label_qav'].astype("str").str.contains("0")) == 75 and
+								len(fragment.tail(100)[-25:].drop_duplicates(subset="score_qav")) > 2 and
+								fragment.tail(100)[-25:].drop_duplicates(subset="label_qav").label_qav.is_monotonic_increasing and
+								fragment.tail(100)[-25:].drop_duplicates(subset="score_qav").score_qav.is_monotonic_increasing and
+								fragment.tail(100)[-25:].drop_duplicates(subset="score_qav").change_qav.is_monotonic_increasing and
+								(1 in fragment.tail(100)[-25:].drop_duplicates(subset="label_qav").label_qav.values) and
+								#fragment.tail(100)[-25:].drop_duplicates(subset="score_qav").iloc[0].score_qav > 0 and
+								#fragment.tail(100)[-25:].drop_duplicates(subset="score_qav").iloc[-2].change_qav > 0.5 and
+								fragment.tail(100)[-25:].drop_duplicates(subset="change_qav").iloc[-1].change_qav > 1
 							)
 
 				sell_cond  =(last['last_sma600'] < prev1['last_sma600'])
-				if buy_mode and (buy_cond2 or buy_cond1):
+				if buy_mode and (buy_cond1 or buy_cond2):
 					if buy_cond1:
 						printLog("buy cond 1 working..")
 					else:
@@ -175,7 +165,7 @@ def backtest():
 					quantity = balance / entry_price
 					buy_mode = False
 					printLog("##### TRADE " +  str(trade_count) + " #####")
-					printLog("BUY: " + str(quantity) + " " +symbol+" for "+ str(entry_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+					printLog("BUY: " + str(quantity) + " " +symbol+" for "+ str(entry_price) + " at " +  str(last.date))
 					fragment_tmp = df.iloc[i-window_size:i+20,:]
 					fragment_tmp = detect_anomaly(fragment_tmp)
 					printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
@@ -190,7 +180,7 @@ def backtest():
 					entry_price = 0
 					trade_count += 1
 					buy_mode = True
-					printLog("SELL: " + str(quantity) + " " +symbol+" for "+ str(exit_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+					printLog("SELL: " + str(quantity) + " " +symbol+" for "+ str(exit_price) + " at " +  str(last.date))
 					printLog("PROFIT: " + str(profit*100))
 					printLog("BALANCE: " + str(balance))
 				else:
@@ -208,7 +198,6 @@ def backtest():
 					printLog("TRADE COUNT FOR "+symbol +": "+ str(trade_count))
 					printLog("**********************************")
 					#plot_buy_sell(trade_history)
-
 
 
 def plot_buy_sell(trade_history):
@@ -288,5 +277,4 @@ def printLog(*args, **kwargs):
 if __name__ == '__main__':
 	#plot_symbols()
 	backtest()
-
 

@@ -7,6 +7,7 @@ password: mEMAnkZ9sy9PlJLh
 screen -S your_session_name -> new screen
 screen -ls  ---> list running screens
 screen -r 1798.pts-0.bethabit ---> connect (attach) to screen
+screen -r 7247.backtest
 ctrl + a + d  ---> disconnect (detach) from screen
 
 disk usage size of directory ----> du -hs /home/ubuntu/datacollect
@@ -16,10 +17,7 @@ delete files ---> find . -type f -iname \*.jpg -delete
 
 
 copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/datacollect /Users/apple/Desktop/dev/projectlife/data/newticker
-
-
-
-
+                              scp -r ubuntu@172.81.178.30:/home/ubuntu/projectlife/hf /Users/apple/Desktop/dev/projectlife/hf/copy
 
 
 
