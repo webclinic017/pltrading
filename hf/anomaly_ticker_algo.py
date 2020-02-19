@@ -70,7 +70,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	temp =   ["ONEBTC", "WRXBTC", "MATICBTC", "GRSBTC", "ZRXBTC", "RVNBTC"]
+	temp =   ["ONEBTC.csv", "WRXBTC.csv", "MATICBTC.csv", "GRSBTC.csv", "ZRXBTC.csv", "RVNBTC.csv"]
 	SYMBOLS = []
 	dir = os.listdir(path)
 	for s in dir:

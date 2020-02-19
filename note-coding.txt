@@ -266,6 +266,7 @@ db.getCollectionNames().forEach( function(collection_name) {
 
 https://tecadmin.net/enable-swap-on-ubuntu/
 
++ " --- in %s seconds ---" % (time.time() - start_time))
 
 
 mac
