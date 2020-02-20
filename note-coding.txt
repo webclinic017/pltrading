@@ -4,10 +4,11 @@ DEPLOYMENT - SERVER
 ssh ubuntu@172.81.178.30
 password: mEMAnkZ9sy9PlJLh
 
-screen -S your_session_name -> new screen
+screen -S backtest -> new screen
 screen -ls  ---> list running screens
 screen -r 1798.pts-0.bethabit ---> connect (attach) to screen
-screen -r 7247.backtest
+screen -r 787.backtest
+screen -XS 787.backtest quit
 ctrl + a + d  ---> disconnect (detach) from screen
 
 disk usage size of directory ----> du -hs /home/ubuntu/datacollect

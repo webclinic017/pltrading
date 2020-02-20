@@ -35,8 +35,7 @@ pd.options.mode.chained_assignment = None
 
 path = "/home/ubuntu/datacollect/"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-	path = "/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"
-	#path = "/Users/apple/Desktop/dev/projectlife/data/ticker/"
+	path = "/Users/apple/Desktop/dev/projectlife/data/ticker2/"
 
 datatype ="local"
 transaction_fee = 0.00125
@@ -52,13 +51,13 @@ dateformat_save = '%Y-%m-%d-%H-%M'
 import os
 
 def plot_symbols():
-	SYMBOLS = ["HBARBTC"]
-	# dir = os.listdir(path)
-	# for s in dir:
-	# 	SYMBOLS.append(s.split(".csv")[0])
-	# pdb.set_trace()
+	SYMBOLS = []
+	dir = os.listdir(path)
+	for s in dir:
+		if ".py" not in s:
+	 		SYMBOLS.append(s.split(".csv")[0])
 	for symbol in SYMBOLS:
-		data_base = read_csv("/Users/apple/Desktop/dev/projectlife/data/newticker/datacollect/"+symbol+".csv")
+		data_base = read_csv(path+symbol+".csv")
 		df = DataFrame(data_base)
 		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
 		df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
@@ -70,12 +69,15 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	temp =   ["ONEBTC.csv", "WRXBTC.csv", "MATICBTC.csv", "GRSBTC.csv", "ZRXBTC.csv", "RVNBTC.csv"]
-	SYMBOLS = []
-	dir = os.listdir(path)
-	for s in dir:
-		if ".py" not in s and s not in temp:
-	 		SYMBOLS.append(s.split(".csv")[0])
+	SYMBOLS = ["BANDBTC"]
+	# dir = os.listdir(path)
+	# for s in dir:
+	# 	if ".py" not in s:
+	#  		SYMBOLS.append(s.split(".csv")[0])
+	conditions = [{'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
+				  {'entry_price':0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
+				  {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True} ]
+
 	for symbol in SYMBOLS:
 		trade_count = 0
 		trade_history = []
@@ -102,19 +104,21 @@ def backtest():
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
 		df['last_sma600'] = df.last_price.rolling(700).mean()
-		#df_x = df
-		#df = df.iloc[40000:100000]
+		df_x = df
+		df = df.iloc[1:200000] # band
 		#fragment = detect_anomaly(df)
 		#print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
 		#plot_whole(df_x)
 		#pdb.set_trace()
 		#wrx 54370 #theta 88346 #pivx 56149 wpr 24326 nkn* 13561 lend* 11175 ftm- 26731
 		#ppt* 91933 enj* 75741 fun 17250 fuel* 4280 bqx 16315 stx* 20347 hbar 17410 bcd 58680 go 9538 poe- 6784 gto 56299
+		#wpr 24280 knc* 154167 ftt 9721 req* 64927 gas- 122063 bcd- 58700 mana 141712 edo* 129260 ast 104466 band* 183667 icx- 177323 tfuel 29121
 		df = df.reset_index()
 		df = df.fillna(0)
 		window_size = 500
 		found_dates=[]
 		found_list=[]
+
 		for i, row in df.iterrows():
 			start_time = time.time()
 			current_price = row['last_price']
@@ -132,9 +136,8 @@ def backtest():
 				last_25_nodup_label = last_25.drop_duplicates(subset="label_qav")
 				last_25_nodup_score = last_25.drop_duplicates(subset="score_qav")
 				last_25_nodup_change = last_25.drop_duplicates(subset="change_qav")
-				#pdb.set_trace()
 
-				buy_cond1 =  (
+				conditions[0]['buy_cond'] =(
 								sum(first_35[-5:]['label_qav'].astype("str").str.contains("1")) == 5 and
 								sum(first_35[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
 								sum(first_35[-5:]['change_qav']) > 0.5 and
@@ -148,8 +151,9 @@ def backtest():
 									(fragment.iloc[-2]["change_qav"] > fragment.iloc[-5]["change_qav"])
 								)
 							)
+				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
 
-				buy_cond2 =  (
+				conditions[1]['buy_cond'] =(
 								sum(first_75['label_qav'].astype("str").str.contains("0")) == 75 and
 								len(last_25_nodup_score.score_qav) > 2 and
 								(last_25_nodup_score.label_qav.iloc[0] == 0 and last_25_nodup_score.label_qav.iloc[-1] == 1 and last_25_nodup_score.label_qav.iloc[-2] == 1)  and
@@ -161,55 +165,49 @@ def backtest():
 								last_25_nodup_score.score_qav.iloc[0] > 0 and
 								(last_25_nodup_score.change_price >=0).all()
 							)
+				conditions[1]['sell_cond'] =(last['last_sma200'] < prev1['last_sma200'])
 
-				sell_cond  =(last['last_sma600'] < prev1['last_sma600'])
-				if buy_mode and (buy_cond2 or buy_cond1):
-					if buy_cond1:
-						printLog("buy cond 1 working..")
+				conditions[2]['buy_cond'] = conditions[1]['buy_cond']
+				conditions[2]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+
+				for ic, cond in enumerate(conditions):
+					if cond['buy_mode'] and cond['buy_cond']:
+						printLog("CONDITION " + str(ic+1) +" IS BUYING....")
+						conditions[ic]['action'] = BUY
+						conditions[ic]['entry_price']  =  current_price
+						conditions[ic]['buy_mode'] = False
+						printLog("##### TRADE " +  str(cond['trade_count']) + " #####")
+						printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+						fragment_tmp = df.iloc[i-window_size:i+20,:]
+						fragment_tmp = detect_anomaly(fragment_tmp)
+						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+						printLog("20 after----->>>>>>>")
+						printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+					elif not cond['buy_mode'] and cond['sell_cond']:
+						printLog("CONDITION " + str(ic+1) +" IS SELLING....")
+						conditions[ic]['action'] = SELL
+						exit_price = current_price
+						profit = ((exit_price - cond['entry_price'])/cond['entry_price'] + 1)*(1-transaction_fee)**2 - 1
+						conditions[ic]['balance'] = conditions[ic]['balance'] * (1.0 + profit)
+						conditions[ic]['trade_count'] += 1
+						conditions[ic]['buy_mode'] = True
+						print("SELL: " + symbol+" for "+ str(exit_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+						print("PROFIT: " + str(profit*100))
+						print("BALANCE: " + str(cond['balance']))
 					else:
-						printLog("buy cond 2 working..")
-					buy_index = i
-					action = BUY
-					entry_price =  current_price
-					entry_tick = current_tick
-					quantity = balance / entry_price
-					buy_mode = False
-					printLog("##### TRADE " +  str(trade_count) + " #####")
-					printLog("BUY: " + str(quantity) + " " +symbol+" for "+ str(entry_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
-					fragment_tmp = df.iloc[i-window_size:i+20,:]
-					fragment_tmp = detect_anomaly(fragment_tmp)
-					printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
-					printLog("20 after----->>>>>>>")
-					printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
-					#pdb.set_trace()
-				elif not buy_mode and sell_cond:
-					action = SELL
-					exit_price = current_price
-					profit = ((exit_price - entry_price)/entry_price + 1)*(1-transaction_fee)**2 - 1
-					balance = balance * (1.0 + profit)
-					entry_price = 0
-					trade_count += 1
-					buy_mode = True
-					printLog("SELL: " + str(quantity) + " " +symbol+" for "+ str(exit_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
-					printLog("PROFIT: " + str(profit*100))
-					printLog("BALANCE: " + str(balance))
-				else:
-					action = HOLD
+						conditions[ic]['action'] = HOLD
 
-				trade_history.append((action, current_tick, current_price, balance, profit))
+				if (current_tick > len(df)-1):
+					print("*********TOTAL RESULTS*************************")
+					for ic, cond in enumerate(conditions):
+						print("CONDITION NUMBER: "+ str(ic))
+						print("DATE BETWEEN "+ symbol +": "+ str(df.head(1).date) + "-"+str(df.tail(1).date))
+						print("TOTAL BALANCE FOR "+ symbol +": "+ str(cond['balance']))
+						print("TRADE COUNT FOR "+ symbol +": "+ str(cond['trade_count']))
+					print("**********************************")
 
 				if i % 1000 == 0:
 					printLog(symbol+"-"+str(row['index']))
-
-				if (current_tick > len(df)-1):
-					results[symbol] = {'balance':np.array([balance]), "trade_history":trade_history, "trade_count":trade_count }
-					printLog("**********************************")
-					printLog("TOTAL BALANCE FOR "+symbol +": "+ str(balance))
-					printLog("TRADE COUNT FOR "+symbol +": "+ str(trade_count))
-					printLog("**********************************")
-					#plot_buy_sell(trade_history)
-
-
 
 def plot_buy_sell(trade_history):
 	closes = [data[2] for data in trade_history]
