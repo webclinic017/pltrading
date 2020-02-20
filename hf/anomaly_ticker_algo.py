@@ -69,7 +69,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS = ["ARKBTC"]
+	SYMBOLS = ["ENJBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s:
@@ -103,9 +103,9 @@ def backtest():
 		df['last_sma100'] = df.last_price.rolling(100).mean()
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
-		df['last_sma600'] = df.last_price.rolling(700).mean()
+		df['last_sma600'] = df.last_price.rolling(600).mean()
 		df_x = df
-		df = df.iloc[1:500000] # band
+		df = df.iloc[75258:75758] # 72326
 		#fragment = detect_anomaly(df)
 		#print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
 		#plot_whole(df_x)
