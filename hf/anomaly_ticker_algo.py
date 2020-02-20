@@ -35,7 +35,7 @@ pd.options.mode.chained_assignment = None
 
 path = "/home/ubuntu/datacollect/"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-	path = "/Users/apple/Desktop/dev/projectlife/data/ticker2/"
+	path = "/Users/apple/Desktop/dev/projectlife/data/ticker1/"
 
 datatype ="local"
 transaction_fee = 0.00125
@@ -69,7 +69,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS = ["BANDBTC"]
+	SYMBOLS = ["ARKBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s:
@@ -97,7 +97,7 @@ def backtest():
 		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
 		# df = DataFrame(data_base, columns=['symbol','date','price_change','price_change_percent','last_price','best_bid_price',
 		# 		'best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume'])
-		df["date"] = pd.to_datetime(df["date"], unit = 'ms').dt.strftime('%Y-%m-%d %H:%M')
+		#df["date"] = pd.to_datetime(df["date"], unit = 'ms').dt.strftime('%Y-%m-%d %H:%M')
 		df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
 		df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
 		df['last_sma100'] = df.last_price.rolling(100).mean()
@@ -105,7 +105,7 @@ def backtest():
 		df['last_sma400'] = df.last_price.rolling(400).mean()
 		df['last_sma600'] = df.last_price.rolling(700).mean()
 		df_x = df
-		df = df.iloc[1:200000] # band
+		df = df.iloc[1:500000] # band
 		#fragment = detect_anomaly(df)
 		#print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
 		#plot_whole(df_x)
