@@ -55,7 +55,7 @@ def plot_symbols():
 	dir = os.listdir(path)
 	for s in dir:
 		if ".py" not in s:
-	 		SYMBOLS.append(s.split(".csv")[0])
+			SYMBOLS.append(s.split(".csv")[0])
 	for symbol in SYMBOLS:
 		data_base = read_csv(path+symbol+".csv")
 		df = DataFrame(data_base)
@@ -66,16 +66,18 @@ def plot_symbols():
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
 		df['last_sma600'] = df.last_price.rolling(600).mean()
+		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS = ["ENJBTC"]
+	SYMBOLS = ["ARKBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s:
 	#  		SYMBOLS.append(s.split(".csv")[0])
 	conditions = [{'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
 				  {'entry_price':0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
+				  {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
 				  {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True} ]
 
 	for symbol in SYMBOLS:
@@ -104,12 +106,13 @@ def backtest():
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
 		df['last_sma600'] = df.last_price.rolling(600).mean()
+		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 		df_x = df
-		df = df.iloc[75258:75758] # 72326
-		#fragment = detect_anomaly(df)
-		#print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
-		#plot_whole(df_x)
-		#pdb.set_trace()
+		df = df.iloc[343068:345768] # 72326
+		# fragment = detect_anomaly(df)
+		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
+		# plot_whole(df_x)
+
 		#wrx 54370 #theta 88346 #pivx 56149 wpr 24326 nkn* 13561 lend* 11175 ftm- 26731
 		#ppt* 91933 enj* 75741 fun 17250 fuel* 4280 bqx 16315 stx* 20347 hbar 17410 bcd 58680 go 9538 poe- 6784 gto 56299
 		#wpr 24280 knc* 154167 ftt 9721 req* 64927 gas- 122063 bcd- 58700 mana 141712 edo* 129260 ast 104466 band* 183667 icx- 177323 tfuel 29121
@@ -131,14 +134,23 @@ def backtest():
 				prev1 =  fragment.iloc[-2,:]
 				prev2 =  fragment.iloc[-3,:]
 				first_35 = fragment.tail(35)
+				first_50 = fragment.tail(100)[:50]
 				first_75 = fragment.tail(100)[:75]
 				last_25 = fragment.tail(100)[-25:]
+				last_50 = fragment.tail(100)[-50:]
 				last_25_nodup_label = last_25.drop_duplicates(subset="label_qav")
 				last_25_nodup_score = last_25.drop_duplicates(subset="score_qav")
 				last_25_nodup_change = last_25.drop_duplicates(subset="change_qav")
 
+				last_50_nodup_label = last_50.drop_duplicates(subset="label_qav")
+				last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
+				last_50_nodup_change = last_50.drop_duplicates(subset="change_qav")
+				label_qav_values = last_50_nodup_score.label_qav.values.tolist()
+
+
+
 				conditions[0]['buy_cond'] =(
-								sum(first_35[-5:]['label_qav'].astype("str").str.contains("1")) == 5 and
+								sum(first_35[-5:]['label_qav'].astype("str").str.contains("111111111111")) == 5 and
 								sum(first_35[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
 								sum(first_35[-5:]['change_qav']) > 0.5 and
 								sum(first_35[-4:]['change_qav']) > 0.02 and
@@ -152,6 +164,8 @@ def backtest():
 								)
 							)
 				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+
+
 
 				conditions[1]['buy_cond'] =(
 								sum(first_75['label_qav'].astype("str").str.contains("0")) == 75 and
@@ -170,6 +184,25 @@ def backtest():
 				conditions[2]['buy_cond'] = conditions[1]['buy_cond']
 				conditions[2]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
 
+
+
+				conditions[3]['buy_cond'] =(
+								#sum(first_50['label_qav'].astype("str").str.contains("0")) == 50 and
+								len(last_50_nodup_score.score_qav) > 2 and
+								(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1) and
+								label_qav_values.count(1)  == (len(label_qav_values) - 1) and
+								label_qav_values.count(0) == 1 and
+								last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean() > last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean() and
+								last_50.change_price.sum() > 0 and
+								last_50_nodup_score.score_qav.is_monotonic_increasing and
+								last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0]
+							)
+				conditions[3]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+
+
+
+
+
 				for ic, cond in enumerate(conditions):
 					if cond['buy_mode'] and cond['buy_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS BUYING....")
@@ -181,8 +214,8 @@ def backtest():
 						fragment_tmp = df.iloc[i-window_size:i+20,:]
 						fragment_tmp = detect_anomaly(fragment_tmp)
 						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
-						printLog("20 after----->>>>>>>")
-						printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+						#printLog("20 after----->>>>>>>")
+						#printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
 					elif not cond['buy_mode'] and cond['sell_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS SELLING....")
 						conditions[ic]['action'] = SELL
@@ -230,6 +263,7 @@ def plot_whole(df):
 	df.qav_sma100.plot(ax=axes[0], color="orange")
 	df.qav_sma200.plot(ax=axes[0], color="green")
 	df.last_price.plot(ax=axes[1], style='.-')
+	df.last_sma100.plot(ax=axes[1], color="yellow")
 	df.last_sma200.plot(ax=axes[1], color="purple")
 	df.last_sma400.plot(ax=axes[1], color="red")
 	df.last_sma600.plot(ax=axes[1], color="black")
@@ -279,9 +313,9 @@ def print_df(df):
 		print(df)
 
 def printLog(*args, **kwargs):
-    print(*args, **kwargs)
-    with open('output.out','a') as file:
-        print(*args, **kwargs, file=file)
+	print(*args, **kwargs)
+	with open('output.out','a') as file:
+		print(*args, **kwargs, file=file)
 
 if __name__ == '__main__':
 	#plot_symbols()

@@ -1,8 +1,15 @@
 ######
 DEPLOYMENT - SERVER
 #####
+linode server
+------------
 ssh ubuntu@172.81.178.30
 password: mEMAnkZ9sy9PlJLh
+
+home computer hp
+-----------------
+ssh canercak@192.168.1.3
+pass: canersbu90
 
 screen -S backtest -> new screen
 screen -ls  ---> list running screens
@@ -19,6 +26,9 @@ delete files ---> find . -type f -iname \*.jpg -delete
 
 copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/datacollect /Users/apple/Desktop/dev/projectlife/data/newticker
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/projectlife/hf /Users/apple/Desktop/dev/projectlife/hf/copy
+
+
+scp canercak@192.168.1.3:/home/canercak/Desktop/dev/projectlife/hf/output.out /Users/apple/Desktop/dev/projectlife/hf/copy
 
 
 
