@@ -60,8 +60,10 @@ def plot_symbols():
 		data_base = read_csv(path+symbol+".csv")
 		df = DataFrame(data_base)
 		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
+		df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
 		df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
 		df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
+		df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
 		df['last_sma100'] = df.last_price.rolling(100).mean()
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
@@ -70,15 +72,15 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS = ["ARKBTC"]
+	SYMBOLS = ["LRCBTC"] #"EDOBTC", "ONEBTC", "ARKBTC", "LRCBTC", "ENJBTC",
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s:
 	#  		SYMBOLS.append(s.split(".csv")[0])
-	conditions = [{'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
-				  {'entry_price':0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
-				  {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
-				  {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True} ]
+	conditions = [{'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True}]
+				  # {'entry_price':0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
+				  # {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True},
+				  # {'entry_price': 0, 'action': HOLD, 'trade_count': 0, "balance":initial_balance, "buy_mode":True} ]
 
 	for symbol in SYMBOLS:
 		trade_count = 0
@@ -100,25 +102,25 @@ def backtest():
 		# df = DataFrame(data_base, columns=['symbol','date','price_change','price_change_percent','last_price','best_bid_price',
 		# 		'best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume'])
 		#df["date"] = pd.to_datetime(df["date"], unit = 'ms').dt.strftime('%Y-%m-%d %H:%M')
+		df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
 		df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
 		df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
+		df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
 		df['last_sma100'] = df.last_price.rolling(100).mean()
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
 		df['last_sma600'] = df.last_price.rolling(600).mean()
 		df['last_sma1000'] = df.last_price.rolling(1000).mean()
-		df_x = df
-		df = df.iloc[343068:345768] # 72326
-		# fragment = detect_anomaly(df)
-		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(200))
-		# plot_whole(df_x)
 
-		#wrx 54370 #theta 88346 #pivx 56149 wpr 24326 nkn* 13561 lend* 11175 ftm- 26731
-		#ppt* 91933 enj* 75741 fun 17250 fuel* 4280 bqx 16315 stx* 20347 hbar 17410 bcd 58680 go 9538 poe- 6784 gto 56299
-		#wpr 24280 knc* 154167 ftt 9721 req* 64927 gas- 122063 bcd- 58700 mana 141712 edo* 129260 ast 104466 band* 183667 icx- 177323 tfuel 29121
+		df_x = df
+		df = df.iloc[89788:90788]
+		fragment = detect_anomaly(df)
+		print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
+		plot_whole(df_x)
+		#pdb.set_trace()
 		df = df.reset_index()
 		df = df.fillna(0)
-		window_size = 500
+		window_size = 1000
 		found_dates=[]
 		found_list=[]
 
@@ -132,16 +134,16 @@ def backtest():
 				fragment = fragment.reset_index()
 				last =  fragment.iloc[-1,:]
 				prev1 =  fragment.iloc[-2,:]
-				prev2 =  fragment.iloc[-3,:]
-				first_35 = fragment.tail(35)
-				first_50 = fragment.tail(100)[:50]
-				first_75 = fragment.tail(100)[:75]
-				last_25 = fragment.tail(100)[-25:]
-				last_50 = fragment.tail(100)[-50:]
-				last_25_nodup_label = last_25.drop_duplicates(subset="label_qav")
-				last_25_nodup_score = last_25.drop_duplicates(subset="score_qav")
-				last_25_nodup_change = last_25.drop_duplicates(subset="change_qav")
 
+				# first_35 = fragment.tail(35)
+				# first_75 = fragment.tail(100)[:75]
+				# last_25 = fragment.tail(100)[-25:]
+				# last_25_nodup_label = last_25.drop_duplicates(subset="label_qav")
+				# last_25_nodup_score = last_25.drop_duplicates(subset="score_qav")
+				# last_25_nodup_change = last_25.drop_duplicates(subset="change_qav")
+
+				first_50 = fragment.tail(100)[:50]
+				last_50 = fragment.tail(100)[-50:]
 				last_50_nodup_label = last_50.drop_duplicates(subset="label_qav")
 				last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
 				last_50_nodup_change = last_50.drop_duplicates(subset="change_qav")
@@ -149,57 +151,85 @@ def backtest():
 
 
 
+				# conditions[0]['buy_cond'] =(
+				# 				sum(first_35[-5:]['label_qav'].astype("str").str.contains("111111111111")) == 5 and
+				# 				sum(first_35[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
+				# 				sum(first_35[-5:]['change_qav']) > 0.5 and
+				# 				sum(first_35[-4:]['change_qav']) > 0.02 and
+				# 				sum(first_35[-5:]['change_price']) > 0.2 and
+				# 				fragment.iloc[-5]["score_qav"] > 0.25 and
+				# 				fragment.iloc[-5]["change_price"] > 0 and
+				# 				fragment.iloc[-5]["change_qav"] > 0 and
+				# 				(
+				# 					(fragment.iloc[-1]["change_qav"] > fragment.iloc[-5]["change_qav"]) or
+				# 					(fragment.iloc[-2]["change_qav"] > fragment.iloc[-5]["change_qav"])
+				# 				)
+				# 			)
+				# conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+
+
+
+				# conditions[1]['buy_cond'] =(
+				# 				sum(first_75['label_qav'].astype("str").str.contains("0")) == 75 and
+				# 				len(last_25_nodup_score.score_qav) > 2 and
+				# 				(last_25_nodup_score.label_qav.iloc[0] == 0 and last_25_nodup_score.label_qav.iloc[-1] == 1 and last_25_nodup_score.label_qav.iloc[-2] == 1)  and
+				# 				last_25_nodup_score.score_qav.is_monotonic_increasing and
+				# 				last_25_nodup_label.label_qav.is_monotonic_increasing and
+				# 				last_25_nodup_score.change_qav.is_monotonic_increasing and
+				# 				last_25_nodup_change.change_qav.iloc[-1] == last_25_nodup_score.change_qav.iloc[-1] and
+				# 				last_25_nodup_score.change_qav.iloc[-1] > 1 and
+				# 				last_25_nodup_score.score_qav.iloc[0] > 0 and
+				# 				(last_25_nodup_score.change_price >=0).all()
+				# 			)
+				# conditions[1]['sell_cond'] =(last['last_sma200'] < prev1['last_sma200'])
+
+				# conditions[2]['buy_cond'] = conditions[1]['buy_cond']
+				# conditions[2]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+
+
+				# conditions[3]['buy_cond'] =(
+				# 				#sum(first_50['label_qav'].astype("str").str.contains("0")) == 50 and
+				# 				len(last_50_nodup_score.score_qav) > 2 and
+				# 				# en az 0 1 1 pattern olcak
+				# 				(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1) and
+				# 				label_qav_values.count(1)  == (len(label_qav_values) - 1) and
+				# 				label_qav_values.count(0) == 1 and
+				# 				# pattern 0la başlayıp 1le devam edecek
+				# 				(last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean()) > (last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean()) and
+				# 				#son change_qav ortalaması son 3tekinden buyuk olcak
+				# 				last_50.change_price.sum() > 0 and
+				# 				#change_price toplamı 0 dan buyuk olcak
+				# 				last_50_nodup_score.score_qav.is_monotonic_increasing and
+				# 				#score_qav dzenli artacak
+				# 				(last_50_nodup_score.change_qav >= 0).all() and
+				# 				(last_50.loc[last_50_nodup_score.iloc[1].name].change_price >= 0) and
+				# 				(last_50_nodup_score[last_50_nodup_score.label_qav==1].score_qav > 0).all() and
+				# 				last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0] and
+				# 				(last_50.loc[last_50_nodup_score.iloc[1].name+1:last_50_nodup_score.iloc[-1].name-1].change_price > 0).any()
+				# 			)
+				# conditions[3]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+
 				conditions[0]['buy_cond'] =(
-								sum(first_35[-5:]['label_qav'].astype("str").str.contains("111111111111")) == 5 and
-								sum(first_35[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
-								sum(first_35[-5:]['change_qav']) > 0.5 and
-								sum(first_35[-4:]['change_qav']) > 0.02 and
-								sum(first_35[-5:]['change_price']) > 0.2 and
-								fragment.iloc[-5]["score_qav"] > 0.25 and
-								fragment.iloc[-5]["change_price"] > 0 and
-								fragment.iloc[-5]["change_qav"] > 0 and
-								(
-									(fragment.iloc[-1]["change_qav"] > fragment.iloc[-5]["change_qav"]) or
-									(fragment.iloc[-2]["change_qav"] > fragment.iloc[-5]["change_qav"])
-								)
-							)
-				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-
-
-
-				conditions[1]['buy_cond'] =(
-								sum(first_75['label_qav'].astype("str").str.contains("0")) == 75 and
-								len(last_25_nodup_score.score_qav) > 2 and
-								(last_25_nodup_score.label_qav.iloc[0] == 0 and last_25_nodup_score.label_qav.iloc[-1] == 1 and last_25_nodup_score.label_qav.iloc[-2] == 1)  and
-								last_25_nodup_score.score_qav.is_monotonic_increasing and
-								last_25_nodup_label.label_qav.is_monotonic_increasing and
-								last_25_nodup_score.change_qav.is_monotonic_increasing and
-								last_25_nodup_change.change_qav.iloc[-1] == last_25_nodup_score.change_qav.iloc[-1] and
-								last_25_nodup_score.change_qav.iloc[-1] > 1 and
-								last_25_nodup_score.score_qav.iloc[0] > 0 and
-								(last_25_nodup_score.change_price >=0).all()
-							)
-				conditions[1]['sell_cond'] =(last['last_sma200'] < prev1['last_sma200'])
-
-				conditions[2]['buy_cond'] = conditions[1]['buy_cond']
-				conditions[2]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-
-
-
-				conditions[3]['buy_cond'] =(
 								#sum(first_50['label_qav'].astype("str").str.contains("0")) == 50 and
 								len(last_50_nodup_score.score_qav) > 2 and
+								# en az 0 1 1 pattern olcak
 								(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1) and
 								label_qav_values.count(1)  == (len(label_qav_values) - 1) and
 								label_qav_values.count(0) == 1 and
-								last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean() > last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean() and
+								# pattern 0la başlayıp 1le devam edecek
+								(last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean()) > (last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean()) and
+								#son change_qav ortalaması son 3tekinden buyuk olcak
 								last_50.change_price.sum() > 0 and
+								#change_price toplamı 0 dan buyuk olcak
 								last_50_nodup_score.score_qav.is_monotonic_increasing and
-								last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0]
+								#score_qav dzenli artacak
+								(last_50_nodup_score.change_qav >= 0).all() and
+								(last_50.loc[last_50_nodup_score.iloc[1].name].change_price >= 0) and
+								(last_50_nodup_score[last_50_nodup_score.label_qav==1].score_qav > 0).all() and
+								last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0] and
+								(last_50.loc[last_50_nodup_score.iloc[1].name+1:last_50_nodup_score.iloc[-1].name-1].change_price > 0).any()
 							)
-				conditions[3]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-
-
+				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
 
 
 
@@ -211,11 +241,12 @@ def backtest():
 						conditions[ic]['buy_mode'] = False
 						printLog("##### TRADE " +  str(cond['trade_count']) + " #####")
 						printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
-						fragment_tmp = df.iloc[i-window_size:i+20,:]
-						fragment_tmp = detect_anomaly(fragment_tmp)
-						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+						# fragment_tmp = df.iloc[i-window_size:i+20,:]
+						# fragment_tmp = detect_anomaly(fragment_tmp)
+						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
 						#printLog("20 after----->>>>>>>")
 						#printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+						#pdb.set_trace()
 					elif not cond['buy_mode'] and cond['sell_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS SELLING....")
 						conditions[ic]['action'] = SELL
@@ -235,8 +266,8 @@ def backtest():
 					for ic, cond in enumerate(conditions):
 						print("CONDITION NUMBER: "+ str(ic))
 						print("DATE BETWEEN "+ symbol +": "+ str(df.head(1).date) + "-"+str(df.tail(1).date))
-						print("TOTAL BALANCE FOR "+ symbol +": "+ str(cond['balance']))
-						print("TRADE COUNT FOR "+ symbol +": "+ str(cond['trade_count']))
+						print("TOTAL BALANCE: "+ str(cond['balance']))
+						print("TRADE COUNT: "+ str(cond['trade_count']))
 					print("**********************************")
 
 				if i % 1000 == 0:
@@ -260,13 +291,18 @@ def plot_whole(df):
 	plt.clf()
 	fig, axes = plt.subplots(nrows=2, ncols=1)
 	df.total_traded_quote_asset_volume.plot(ax=axes[0] , color="blue", style='.-')
+
+	df.qav_sma50.plot(ax=axes[0], color="red")
 	df.qav_sma100.plot(ax=axes[0], color="orange")
-	df.qav_sma200.plot(ax=axes[0], color="green")
+	df.qav_sma200.plot(ax=axes[0], color="brown")
+	df.qav_sma400.plot(ax=axes[0], color="green")
+
 	df.last_price.plot(ax=axes[1], style='.-')
 	df.last_sma100.plot(ax=axes[1], color="yellow")
 	df.last_sma200.plot(ax=axes[1], color="purple")
 	df.last_sma400.plot(ax=axes[1], color="red")
 	df.last_sma600.plot(ax=axes[1], color="black")
+	df.last_sma1000.plot(ax=axes[1], color="brown")
 	plt.title(df.iloc[-1].symbol)
 	plt.show()
 
