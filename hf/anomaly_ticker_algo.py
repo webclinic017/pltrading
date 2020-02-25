@@ -44,7 +44,7 @@ pd.options.mode.chained_assignment = None
 
 path = "/home/ubuntu/datacollect/"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-	path = "/Users/apple/Desktop/dev/projectlife/data/ticker1/"
+	path = "/Users/apple/Desktop/dev/projectlife/data/ticker2/"
 
 datatype ="local"
 transaction_fee = 0.00125
@@ -81,7 +81,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS = ["SYSBTC"] #["ARKBTC","LRCBTC","SYSBTC", "SKYBTC", "ONGBTC","BLZBTC","NEBLBTC", "OAXBTC"]
+	SYMBOLS = ["TFUELBTC"]#["ARKBTC","LRCBTC","SYSBTC", "SKYBTC", "ONGBTC","BLZBTC","NEBLBTC", "OAXBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s:
@@ -119,16 +119,16 @@ def backtest():
 		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 
 		df_x = df
-		df = df.iloc[41000:43000]
-		fragment = detect_anomaly(df)
-		fragment_avg = fragment.groupby(['score_qav'], as_index=False, sort=False).mean()
-		fragment_sum = fragment.groupby(['score_qav'], as_index=False, sort=False).sum()
-		#print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
-		#print(fragment.groupby(['score_qav'], as_index=False, sort=False).mean())
-		#print(fragment.groupby(['score_qav'], as_index=False, sort=False).sum())
-		plot_whole(df_x)
+		df = df.iloc[28143:30143]
+		# fragment = detect_anomaly(df)
+		# fragment_avg = fragment.groupby(['score_qav'], as_index=False, sort=False).mean()
+		# fragment_sum = fragment.groupby(['score_qav'], as_index=False, sort=False).sum()
+		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
+		# print(fragment.groupby(['score_qav'], as_index=False, sort=False).mean())
+		# print(fragment.groupby(['score_qav'], as_index=False, sort=False).sum())
+		# #plot_whole(df_x)
+		# pdb.set_trace()
 
-		#pdb.set_trace()
 		df = df.reset_index()
 		df = df.fillna(0)
 		window_size = 1000
@@ -145,6 +145,8 @@ def backtest():
 				fragment = fragment.reset_index()
 				last =  fragment.iloc[-1,:]
 				prev1 =  fragment.iloc[-2,:]
+				fragment_avg = fragment.groupby(['score_qav'], as_index=False, sort=False).mean()
+				fragment_sum = fragment.groupby(['score_qav'], as_index=False, sort=False).sum()
 
 				# first_35 = fragment.tail(35)
 				# first_75 = fragment.tail(100)[:75]
@@ -159,9 +161,6 @@ def backtest():
 				# last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
 				# last_50_nodup_change = last_50.drop_duplicates(subset="change_qav")
 				# label_qav_values = last_50_nodup_score.label_qav.values.tolist()
-
-				fragment_avg = fragment.groupby(['score_qav'], as_index=False, sort=False).mean()
-				fragment_sum = fragment.groupby(['score_qav'], as_index=False, sort=False).sum()
 
 				# if last.date ==1582142472952:
 				# 	pdb.set_trace()
@@ -248,18 +247,18 @@ def backtest():
 
 				conditions[0]['buy_cond'] =(
 												(
-													len(fragment_avg) >=4 and
-													fragment_avg.label_qav.iloc[-1] == 1 and fragment_avg.label_qav.iloc[-2] == 1 and
-													fragment_avg.label_qav.iloc[-3] == 1 and fragment_avg.label_qav.iloc[-4] == 0 and
-													fragment_sum.change_qav.sum() > 2 and
+													len(fragment_avg) >=4 and #kural10
+													fragment_avg.label_qav.iloc[-1] == 1 and fragment_avg.label_qav.iloc[-2] == 1 and #kural10
+													fragment_avg.label_qav.iloc[-3] == 1 and fragment_avg.label_qav.iloc[-4] == 0 and #kural10
+													fragment_sum.change_qav.sum() > 2 and #kural11
 													fragment_sum.change_price.sum() > 1 and
 													(fragment_sum.change_qav.iloc[-1] + fragment_sum.change_qav.iloc[-2] + fragment_sum.change_qav.iloc[-3] > 0) and
 													fragment_avg.change_price.iloc[-1] >= 0 and
-													fragment_avg.iloc[:-3].change_price.sum() > 0 and
-													(fragment_avg.iloc[:-3].score_qav < fragment_avg.iloc[-3].score_qav).all() and
-													fragment_avg.score_qav.iloc[-1] > fragment_avg.score_qav.iloc[-3] and
+													fragment_avg.iloc[:-3].change_price.sum() > 0 and #req 64931
+													(fragment_avg.iloc[:-3].score_qav < fragment_avg.iloc[-3].score_qav).all() and#req 64931
+													fragment_avg.score_qav.iloc[-1] > fragment_avg.score_qav.iloc[-3] and #kural13
 													(fragment_avg.score_qav.iloc[-2] > statistics.mean([fragment_avg.score_qav.iloc[-1], fragment_avg.score_qav.iloc[-3]])/2) and
-													fragment_avg.change_price.iloc[-1] > fragment_avg.change_price.iloc[-2] and
+													fragment_avg.change_price.iloc[-1] > fragment_avg.change_price.iloc[-2] and #kural12  #req 64931
 													(fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-3]].change_qav > 0).sum() > ((fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-3]].change_qav > 0).count() / 4) and #kural1
 													(fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-2]].change_qav > 0).sum() > ((fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-2]].change_qav > 0).count() / 4) and #kural1
 													(fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-1]].change_qav > 0).sum() > ((fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-1]].change_qav > 0).count() / 4) and #kural1
@@ -267,22 +266,23 @@ def backtest():
 													(not fragment_avg[-3:].change_qav.is_monotonic_decreasing) and  #kural9
 													(fragment_avg[fragment_avg['label_qav'] == 0].score_qav < 1).any() and  #kural6
 													fragment_avg[-3:].change_price.sum() > 0  #kural8
-
 												)
 											)
 
 				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
 				# KURALLAR
 				# 1.bilerin içinde çok sıfır olamaz. Ozellikle son iki tanesinde haaraket olmazı lazım. Evet.
-				# 2. sscore_qav sondan ikinic eksi olamaz. Hayır.
+				# 2. score_qav sondan ikinic eksi olamaz. Hayır.
 				# 3. birlerden onceki 0lar eksi olamaz (trend sonrası yukseliş). Çoğunluğu eksi olamaz.
 				# 4. avg change_qav birlerin içinde eksi olamaz
 				# 5 -3 sum score_qaz -1 'den kucuk olmalı. Hayır.
 				# 6. çok geç alamaz bu yüzden 0 ların score_qav hepsi pozitif olamaz.  SYS 88691, 44309 daha erken alması lazım
-				# 7. arkası tutarsız geliyor. Aç bak grafikte anlarsın.
 				# 8. birlerde change_price toplamı eksi olamaz
 				# 9. 1 ler arasında aşırı düşüş var
 				# 10. 1110000 olmalı. Evet
+				# 11. change qav toplamı 2den buyuk
+				# 12. son avg change_price bir oncekinden buyuk
+				# 13. son avg score_qav 2 oncelinden buyuk
 
 				for ic, cond in enumerate(conditions):
 					if cond['buy_mode'] and cond['buy_cond']:
@@ -299,7 +299,7 @@ def backtest():
 						printLog(fragment_sum)
 						#printLog("20 after----->>>>>>>")
 						#printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
-						pdb.set_trace()
+						#pdb.set_trace()
 					elif not cond['buy_mode'] and cond['sell_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS SELLING....")
 						conditions[ic]['action'] = SELL
