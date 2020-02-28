@@ -10,13 +10,14 @@ import time
 import statistics
 from pandas import datetime
 import platform
+#import trendet
 import pandas as pd
 import pdb
 import matplotlib.pyplot as plt
 import matplotlib
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
 	matplotlib.use("macOSX")
-from mpl_finance import candlestick_ohlc
+#from mpl_finance import candlestick_ohlc
 import matplotlib.dates as mdates
 import numpy as np
 import time
@@ -42,7 +43,7 @@ pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
 pd.options.mode.chained_assignment = None
 
-path = "/home/ubuntu/datacollect/"
+path = "/home/canercak/Desktop/dev/projectlife/data/ticker2/"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
 	path = "/Users/apple/Desktop/dev/projectlife/data/ticker2/"
 
@@ -81,11 +82,11 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS = ["TFUELBTC"]#["ARKBTC","LRCBTC","SYSBTC", "SKYBTC", "ONGBTC","BLZBTC","NEBLBTC", "OAXBTC"]
-	# dir = os.listdir(path)
-	# for s in dir:
-	# 	if ".py" not in s:
-	#  		SYMBOLS.append(s.split(".csv")[0])
+	SYMBOLS = ["BCDBTC", "QTUMBTC", 'KNCBTC', 'ENJBTC', 'MTLBTC', 'APPCBTC', 'STORJBTC','NXSBTC', 'BANDBTC', 'NAVBTC']#["ARKBTC","LRCBTC","SYSBTC", "NAVBTC", "SKYBTC", "ONGBTC","BLZBTC","NEBLBTC", "OAXBTC"]
+	dir = os.listdir(path)
+	for s in dir:
+		if ".py" not in s and ".DS_Store" not in s:
+	 		SYMBOLS.append(s.split(".csv")[0])
 	conditions = [{'name': 'detect trend', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True}]
 
 	for symbol in SYMBOLS:
@@ -118,16 +119,14 @@ def backtest():
 		df['last_sma600'] = df.last_price.rolling(600).mean()
 		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 
-		df_x = df
-		df = df.iloc[28143:30143]
-		# fragment = detect_anomaly(df)
-		# fragment_avg = fragment.groupby(['score_qav'], as_index=False, sort=False).mean()
-		# fragment_sum = fragment.groupby(['score_qav'], as_index=False, sort=False).sum()
+		#df_x = df
+		#df = df.iloc[239946:243946]
+		#fragment = detect_anomaly(df)
+		#fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
 		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
-		# print(fragment.groupby(['score_qav'], as_index=False, sort=False).mean())
-		# print(fragment.groupby(['score_qav'], as_index=False, sort=False).sum())
-		# #plot_whole(df_x)
-		# pdb.set_trace()
+		# print(fragment_sum)
+		#plot_whole(df_x)
+		#pdb.set_trace()
 
 		df = df.reset_index()
 		df = df.fillna(0)
@@ -145,144 +144,35 @@ def backtest():
 				fragment = fragment.reset_index()
 				last =  fragment.iloc[-1,:]
 				prev1 =  fragment.iloc[-2,:]
-				fragment_avg = fragment.groupby(['score_qav'], as_index=False, sort=False).mean()
-				fragment_sum = fragment.groupby(['score_qav'], as_index=False, sort=False).sum()
 
-				# first_35 = fragment.tail(35)
-				# first_75 = fragment.tail(100)[:75]
-				# last_25 = fragment.tail(100)[-25:]
-				# last_25_nodup_label = last_25.drop_duplicates(subset="label_qav")
-				# last_25_nodup_score = last_25.drop_duplicates(subset="score_qav")
-				# last_25_nodup_change = last_25.drop_duplicates(subset="change_qav")
-
-				# first_50 = fragment.tail(100)[:50]
-				# last_50 = fragment.tail(100)[-50:]
-				# last_50_nodup_label = last_50.drop_duplicates(subset="label_qav")
-				# last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
-				# last_50_nodup_change = last_50.drop_duplicates(subset="change_qav")
-				# label_qav_values = last_50_nodup_score.label_qav.values.tolist()
-
-				# if last.date ==1582142472952:
-				# 	pdb.set_trace()
-
-				# conditions[0]['buy_cond'] =(
-				# 				sum(first_35[-5:]['label_qav'].astype("str").str.contains("111111111111")) == 5 and
-				# 				sum(first_35[:30]['label_qav'].astype("str").str.contains("0")) == 30 and
-				# 				sum(first_35[-5:]['change_qav']) > 0.5 and
-				# 				sum(first_35[-4:]['change_qav']) > 0.02 and
-				# 				sum(first_35[-5:]['change_price']) > 0.2 and
-				# 				fragment.iloc[-5]["score_qav"] > 0.25 and
-				# 				fragment.iloc[-5]["change_price"] > 0 and
-				# 				fragment.iloc[-5]["change_qav"] > 0 and
-				# 				(
-				# 					(fragment.iloc[-1]["change_qav"] > fragment.iloc[-5]["change_qav"]) or
-				# 					(fragment.iloc[-2]["change_qav"] > fragment.iloc[-5]["change_qav"])
-				# 				)
-				# 			)
-				# conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-
-
-
-				# conditions[1]['buy_cond'] =(
-				# 				sum(first_75['label_qav'].astype("str").str.contains("0")) == 75 and
-				# 				len(last_25_nodup_score.score_qav) > 2 and
-				# 				(last_25_nodup_score.label_qav.iloc[0] == 0 and last_25_nodup_score.label_qav.iloc[-1] == 1 and last_25_nodup_score.label_qav.iloc[-2] == 1)  and
-				# 				last_25_nodup_score.score_qav.is_monotonic_increasing and
-				# 				last_25_nodup_label.label_qav.is_monotonic_increasing and
-				# 				last_25_nodup_score.change_qav.is_monotonic_increasing and
-				# 				last_25_nodup_change.change_qav.iloc[-1] == last_25_nodup_score.change_qav.iloc[-1] and
-				# 				last_25_nodup_score.change_qav.iloc[-1] > 1 and
-				# 				last_25_nodup_score.score_qav.iloc[0] > 0 and
-				# 				(last_25_nodup_score.change_price >=0).all()
-				# 			)
-				# conditions[1]['sell_cond'] =(last['last_sma200'] < prev1['last_sma200'])
-
-				# conditions[2]['buy_cond'] = conditions[1]['buy_cond']
-				# conditions[2]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-
-
-				# conditions[3]['buy_cond'] =(
-				# 				#sum(first_50['label_qav'].astype("str").str.contains("0")) == 50 and
-				# 				len(last_50_nodup_score.score_qav) > 2 and
-				# 				# en az 0 1 1 pattern olcak
-				# 				(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1) and
-				# 				label_qav_values.count(1)  == (len(label_qav_values) - 1) and
-				# 				label_qav_values.count(0) == 1 and
-				# 				# pattern 0la başlayıp 1le devam edecek
-				# 				(last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean()) > (last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean()) and
-				# 				#son change_qav ortalaması son 3tekinden buyuk olcak
-				# 				last_50.change_price.sum() > 0 and
-				# 				#change_price toplamı 0 dan buyuk olcak
-				# 				last_50_nodup_score.score_qav.is_monotonic_increasing and
-				# 				#score_qav dzenli artacak
-				# 				(last_50_nodup_score.change_qav >= 0).all() and
-				# 				(last_50.loc[last_50_nodup_score.iloc[1].name].change_price >= 0) and
-				# 				(last_50_nodup_score[last_50_nodup_score.label_qav==1].score_qav > 0).all() and
-				# 				last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0] and
-				# 				(last_50.loc[last_50_nodup_score.iloc[1].name+1:last_50_nodup_score.iloc[-1].name-1].change_price > 0).any()
-				# 			)
-				# conditions[3]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-
-				# conditions[0]['buy_cond'] =(
-				# 				#sum(first_50['label_qav'].astype("str").str.contains("0")) == 50 and
-				# 				len(last_50_nodup_score.score_qav) > 2 and
-				# 				# en az 0 1 1 pattern olcak
-				# 				(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1) and
-				# 				label_qav_values.count(1)  == (len(label_qav_values) - 1) and
-				# 				label_qav_values.count(0) == 1 and
-				# 				# pattern 0la başlayıp 1le devam edecek
-				# 				(last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean()) > (last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean()) and
-				# 				#son change_qav ortalaması son 3tekinden buyuk olcak
-				# 				last_50.change_price.sum() > 0 and
-				# 				#change_price toplamı 0 dan buyuk olcak
-				# 				last_50_nodup_score.score_qav.is_monotonic_increasing and
-				# 				#score_qav dzenli artacak
-				# 				(last_50_nodup_score.change_qav >= 0).all() and
-				# 				(last_50.loc[last_50_nodup_score.iloc[1].name].change_price >= 0) and
-				# 				(last_50_nodup_score[last_50_nodup_score.label_qav==1].score_qav > 0).all() and
-				# 				last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0] and
-				# 				(last_50.loc[last_50_nodup_score.iloc[1].name+1:last_50_nodup_score.iloc[-1].name-1].change_price > 0).any()
-				# 			)
-				# conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+				fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
+				first_950 = fragment[:950]
+				last_50 = fragment[-50:]
+				last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
 
 				conditions[0]['buy_cond'] =(
-												(
-													len(fragment_avg) >=4 and #kural10
-													fragment_avg.label_qav.iloc[-1] == 1 and fragment_avg.label_qav.iloc[-2] == 1 and #kural10
-													fragment_avg.label_qav.iloc[-3] == 1 and fragment_avg.label_qav.iloc[-4] == 0 and #kural10
-													fragment_sum.change_qav.sum() > 2 and #kural11
-													fragment_sum.change_price.sum() > 1 and
-													(fragment_sum.change_qav.iloc[-1] + fragment_sum.change_qav.iloc[-2] + fragment_sum.change_qav.iloc[-3] > 0) and
-													fragment_avg.change_price.iloc[-1] >= 0 and
-													fragment_avg.iloc[:-3].change_price.sum() > 0 and #req 64931
-													(fragment_avg.iloc[:-3].score_qav < fragment_avg.iloc[-3].score_qav).all() and#req 64931
-													fragment_avg.score_qav.iloc[-1] > fragment_avg.score_qav.iloc[-3] and #kural13
-													(fragment_avg.score_qav.iloc[-2] > statistics.mean([fragment_avg.score_qav.iloc[-1], fragment_avg.score_qav.iloc[-3]])/2) and
-													fragment_avg.change_price.iloc[-1] > fragment_avg.change_price.iloc[-2] and #kural12  #req 64931
-													(fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-3]].change_qav > 0).sum() > ((fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-3]].change_qav > 0).count() / 4) and #kural1
-													(fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-2]].change_qav > 0).sum() > ((fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-2]].change_qav > 0).count() / 4) and #kural1
-													(fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-1]].change_qav > 0).sum() > ((fragment[fragment['score_qav'] == fragment_avg.score_qav.iloc[-1]].change_qav > 0).count() / 4) and #kural1
-													((fragment_avg[fragment_avg['label_qav'] == 0].change_price > 0).sum() >  (fragment_avg[fragment_avg['label_qav'] == 0].change_price.count()) / 2) and #kural3
-													(not fragment_avg[-3:].change_qav.is_monotonic_decreasing) and  #kural9
-													(fragment_avg[fragment_avg['label_qav'] == 0].score_qav < 1).any() and  #kural6
-													fragment_avg[-3:].change_price.sum() > 0  #kural8
-												)
-											)
+											(first_950.label_qav == 0).all() and
+											#kural1 - ilk 950 tanesi 0 olcak
+											(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1 and last_50_nodup_score.label_qav.iloc[-2] == 1) and
+											#kural2 - pattern 0la başlayıp 1le devam edecek, son iki tanesi 1 olcak
+											(
+												((fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > ((fragment_sum[fragment_sum['label_qav'] == 0].change_qav).sum() * 4)) or
+										   		((fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() + (fragment_sum[fragment_sum['label_qav'] ==0].change_qav).sum() > 15 )
+										   	) and
+										   	#kural3 - 1'lerın change_qav toplamı 0'ların toplamından 4 kat buyuk veya ikiside 3!twn buyuk
+										   	(fragment_sum[fragment_sum['label_qav'] == 0].change_qav).sum() > 0 and
+										   	(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 2 and
+										   	#kural4 - 0'ların toplamı 0'dan buyuk, 1'lerin toplamı 2'den buyuk olcak
+										   	fragment_sum.change_price.sum() > 3 and
+										   	#kural4 - 0'ların ve 1'lerin change price toplamıu 3'ten buyuk olcak
+										    trendline(last_50[last_50['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
+										    #kural5 - trendline yuksek olcak
+										    (fragment_sum.change_qav > 0).all() and (fragment_sum.change_price > 0).all()
+										    #kural6 - hem change_qav hem change_price 0dan buyuk olacak
+										   )
 
-				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
-				# KURALLAR
-				# 1.bilerin içinde çok sıfır olamaz. Ozellikle son iki tanesinde haaraket olmazı lazım. Evet.
-				# 2. score_qav sondan ikinic eksi olamaz. Hayır.
-				# 3. birlerden onceki 0lar eksi olamaz (trend sonrası yukseliş). Çoğunluğu eksi olamaz.
-				# 4. avg change_qav birlerin içinde eksi olamaz
-				# 5 -3 sum score_qaz -1 'den kucuk olmalı. Hayır.
-				# 6. çok geç alamaz bu yüzden 0 ların score_qav hepsi pozitif olamaz.  SYS 88691, 44309 daha erken alması lazım
-				# 8. birlerde change_price toplamı eksi olamaz
-				# 9. 1 ler arasında aşırı düşüş var
-				# 10. 1110000 olmalı. Evet
-				# 11. change qav toplamı 2den buyuk
-				# 12. son avg change_price bir oncekinden buyuk
-				# 13. son avg score_qav 2 oncelinden buyuk
+				conditions[0]['sell_cond'] =(last['last_sma100'] < prev1['last_sma100'])
+
 
 				for ic, cond in enumerate(conditions):
 					if cond['buy_mode'] and cond['buy_cond']:
@@ -295,7 +185,6 @@ def backtest():
 						# fragment_tmp = df.iloc[i-window_size:i+20,:]
 						# fragment_tmp = detect_anomaly(fragment_tmp)
 						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
-						printLog(fragment_avg)
 						printLog(fragment_sum)
 						#printLog("20 after----->>>>>>>")
 						#printLog(fragment_tmp[['index','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
@@ -308,20 +197,21 @@ def backtest():
 						conditions[ic]['balance'] = conditions[ic]['balance'] * (1.0 + profit)
 						conditions[ic]['trade_count'] += 1
 						conditions[ic]['buy_mode'] = True
-						print("SELL: " + symbol+" for "+ str(exit_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
-						print("PROFIT: " + str(profit*100))
-						print("BALANCE: " + str(cond['balance']))
+						printLog("SELL: " + symbol+" for "+ str(exit_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+						printLog("PROFIT: " + str(profit*100))
+						printLog("BALANCE: " + str(cond['balance']))
 					else:
 						conditions[ic]['action'] = HOLD
 
 				if (current_tick > len(df)-1):
-					print("*********TOTAL RESULTS*************************")
+					printLog("*********TOTAL RESULTS*************************")
 					for ic, cond in enumerate(conditions):
-						print("CONDITION NUMBER: "+ str(ic))
-						print("DATE BETWEEN "+ symbol +": "+ str(df.head(1).date) + "-"+str(df.tail(1).date))
-						print("TOTAL BALANCE: "+ str(cond['balance']))
-						print("TRADE COUNT: "+ str(cond['trade_count']))
-					print("**********************************")
+						printLog("SYMBOL: "+ symbol)
+						printLog("CONDITION NUMBER: "+ str(ic))
+						#print("DATE BETWEEN "+ symbol +": "+ str(df.head(1).date) + "-"+str(df.tail(1).date))
+						printLog("TOTAL BALANCE: "+ str(cond['balance']))
+						printLog("TRADE COUNT: "+ str(cond['trade_count']))
+					printLog("**********************************")
 
 				if i % 1000 == 0:
 					printLog(symbol+"-"+str(row['index']))
@@ -341,7 +231,9 @@ def plot_buy_sell(trade_history):
 
 
 def detect_trend(df):
-	decomposition = seasonal_decompose(df.total_traded_quote_asset_volume, period=365)
+	decomposition = seasonal_decompose(df.total_traded_quote_asset_volume, model='multiplicative', extrapolate_trend='freq',  period=100)
+	matplotlib.rcParams['figure.figsize'] = [9.0,5.0]
+	fig = decomposition.plot()
 	trace1 = go.Scatter(
 	    x = df.date,y = decomposition.trend,
 	    name = 'Trend'
@@ -358,9 +250,12 @@ def detect_trend(df):
 	    x = df.date,y = df.total_traded_quote_asset_volume,
 	    name = 'Mean Stock Value'
 	)
-	pdb.set_trace()
+	plt.show()
 
-
+def trendline(data, order=1):
+    coeffs = np.polyfit(data.index.values, list(data), order)
+    slope = coeffs[-2]
+    return float(slope)
 
 def plot_whole(df):
 	plt.clf()

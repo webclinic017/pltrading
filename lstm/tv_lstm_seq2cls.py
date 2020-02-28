@@ -1,3 +1,7 @@
+#### ÇALIŞMIYOR. BULDUGU BU. CONFUSİON MATRİXİ YARATAMIYOR.
+#neutral    87305
+#pattern        4
+
 import sys
 import os
 import numpy as np
@@ -14,14 +18,14 @@ batch_size = 128
 interval = "5m"
 labels = ['neutral', 'pattern']
 modelname = 'my_bestmodel.h5'
-resultpath = os.path.join('.', 'results/models')
+resultpath = '/Users/apple/Desktop/dev/projectlife/lstm/results/models'
 model_path = os.path.join(resultpath,modelname)
 outputfile = os.path.join(resultpath, 'modelcomparison.json')
 np.set_printoptions(threshold=sys.maxsize)
 X_train, Y_train,  X_test, Y_test = [],[],[],[]
-train_start_date = pd.to_datetime("2018-05-14 00:00")
-test_start_date = pd.to_datetime("2019-03-14 00:00")
-with open('/Users/apple/Desktop/dev/projectlife/utils/classification/strict_patterns.json') as json_file:
+train_start_date = pd.to_datetime("2018-09-26 03:30")
+test_start_date = pd.to_datetime("2019-04-28 03:30")
+with open('/Users/apple/Desktop/dev/projectlife/lstm/strict_patterns2.json') as json_file:
     data = json.load(json_file)
     for elem in data:
         symbol = elem['symbol']
@@ -59,7 +63,6 @@ with open('/Users/apple/Desktop/dev/projectlife/utils/classification/strict_patt
                 break
         except:
             print(symbol +" pattern not found")
-
 X_train = np.array(X_train)
 Y_train = np.array(Y_train)
 X_test = np.array(X_test)
@@ -71,12 +74,14 @@ num_classes = Y_train.shape[1]
 models = modelgen.generate_models(X_train.shape,  number_of_classes=num_classes, number_of_models = 1)
 histories, val_accuracies, val_losses = find_architecture.train_models_on_samples(X_train,Y_train, X_test, Y_test,models,nr_epochs=1,subset_size=300, verbose=True, outputfile=outputfile)
 print('Details of the training process were stored in ',outputfile)
+
 modelcomparisons = pd.DataFrame({'model':[str(params) for model, params, model_types in models],
-					   'train_acc': [history.history['acc'][-1] for history in histories],
+					   'train_acc': [history.history['accuracy'][-1] for history in histories],
 					   'train_loss': [history.history['loss'][-1] for history in histories],
-					   'val_acc': [history.history['val_acc'][-1] for history in histories],
+					   'val_accuracy': [history.history['val_accuracy'][-1] for history in histories],
 					   'val_loss': [history.history['val_loss'][-1] for history in histories]
 					   })
+
 modelcomparisons.to_csv(os.path.join(resultpath, 'modelcomparisons.csv'))
 modelcomparisons
 best_model_index = np.argmax(val_accuracies)
@@ -84,17 +89,19 @@ best_model, best_params, best_model_types = models[best_model_index]
 print('Model type and parameters of the best model:')
 print(best_model_types)
 print(best_params)
-## Train
+
+## Training on Train Data
 nr_epochs = 1
 history = best_model.fit(X_train, Y_train ,epochs=nr_epochs)
-best_model.save(model_path)
-print(model_path)
-model_path = "./results/models/my_bestmodel.h5"
-model_reloaded = load_model(model_path)
-model_reloaded.get_weights()
-#np.all([np.all(x==y) for x,y in zip(best_model.get_weights(), model_reloaded.get_weights())])
-## Test on Validation
-probs = model_reloaded.predict(X_test,batch_size=batch_size)
+# best_model.save(model_path)
+# model_path = resultpath + "/my_bestmodel.h5"
+# pdb.set_trace()
+# model_reloaded = load_model(model_path)
+# model_reloaded.get_weights()
+
+## Test on Validation Data
+#probs = model_reloaded.predict(X_test,batch_size=batch_size)
+probs = best_model.predict(X_test,batch_size=batch_size)
 predicted = probs.argmax(axis=1)
 y_index = Y_test.argmax(axis=1)
 confusion_matrix = pd.crosstab(pd.Series(y_index), pd.Series(predicted))
@@ -102,8 +109,9 @@ confusion_matrix.index = [labels[i] for i in confusion_matrix.index]
 confusion_matrix.columns = [labels[i] for i in confusion_matrix.columns]
 confusion_matrix.reindex(columns=[l for l in labels], fill_value=0)
 print(confusion_matrix)
-pdb.set_trace()
-## Test on Testset
+#pdb.set_trace()
+
+## Test on Test Data
 #model_reloaded.compile(loss='mse', optimizer='adam')
 #score_test = model_reloaded.evaluate(X_test, Y_test, verbose=True)
 #print('Score of best model: ' + str(score_test))

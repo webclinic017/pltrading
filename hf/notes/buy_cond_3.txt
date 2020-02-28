@@ -1,3 +1,31 @@
+# first_50 = fragment.tail(100)[:50]
+# last_50 = fragment.tail(100)[-50:]
+# last_50_nodup_label = last_50.drop_duplicates(subset="label_qav")
+# last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
+# last_50_nodup_change = last_50.drop_duplicates(subset="change_qav")
+# label_qav_values = last_50_nodup_score.label_qav.values.tolist()
+
+# conditions[0]['buy_cond'] =(
+# 				#sum(first_50['label_qav'].astype("str").str.contains("0")) == 50 and
+# 				len(last_50_nodup_score.score_qav) > 2 and
+# 				# en az 0 1 1 pattern olcak
+# 				(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1) and
+# 				label_qav_values.count(1)  == (len(label_qav_values) - 1) and
+# 				label_qav_values.count(0) == 1 and
+# 				# pattern 0la başlayıp 1le devam edecek
+# 				(last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-1]].change_qav.mean()) > (last_50[last_50.score_qav == last_50_nodup_score.score_qav.iloc[-3]].change_qav.mean()) and
+# 				#son change_qav ortalaması son 3tekinden buyuk olcak
+# 				last_50.change_price.sum() > 0 and
+# 				#change_price toplamı 0 dan buyuk olcak
+# 				last_50_nodup_score.score_qav.is_monotonic_increasing and
+# 				#score_qav dzenli artacak
+# 				(last_50_nodup_score.change_qav >= 0).all() and
+# 				(last_50.loc[last_50_nodup_score.iloc[1].name].change_price >= 0) and
+# 				(last_50_nodup_score[last_50_nodup_score.label_qav==1].score_qav > 0).all() and
+# 				last_50_nodup_score.change_price.iloc[-1] > last_50_nodup_score.change_price.iloc[0] and
+# 				(last_50.loc[last_50_nodup_score.iloc[1].name+1:last_50_nodup_score.iloc[-1].name-1].change_price > 0).any()
+# 			)
+# conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
 
 
 ############################################################################################################################################

@@ -1,0 +1,2 @@
+,model,train_acc,train_loss,val_accuracy,val_loss
+0,"{'learning_rate': 0.08360289270402858, 'regularization_rate': 0.0022439468517196116, 'filters': array([85, 17, 44]), 'fc_hidden_nodes': 443}",0.9433333277702332,29.116198094685874,0.9999541640281677,10.439493733192752
