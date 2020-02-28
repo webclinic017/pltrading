@@ -26,10 +26,14 @@ POWR+++,
 BAND: sma100 0.96 sma600 9.25
 REQBTC: sma100 3.075 sma600 3.075
 
-Bulamadıkları
+Hiç Bulamadıkları
 --------------
 ticker1:  ARK, BLZ, NEBL, OAX, SYS
 ticker2: lend,
+
+Yanlış Buldukları
+--------------
+
 
 ÖNEMLİ NOT
 -----------
