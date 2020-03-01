@@ -1,0 +1,73 @@
+[
+    {
+        "symbol": "STXBTC",
+        "patterns":
+                    [
+                        {"data": "ticker3", "end": 13706, "type":"spike_true","certainty":1}
+                        {"data": "ticker3", "end": 52279, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 56747, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 88530, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 98532, "type":"spike_false","certainty":1}
+                    ]
+    },
+    {
+        "symbol": "DUSKBTC",
+        "patterns":
+                    [
+                        {"data": "ticker3", "end": 54780, "type":"spike_true","certainty":1},
+                        {"data": "ticker3", "end": 65458, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 83159, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 91960, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 124100, "type":"spike_false","certainty":1}
+                    ]
+    },
+    {
+        "symbol": "SYSBTC",
+        "patterns":
+                    [
+                        {"data": "ticker3", "end": 11065, "type":"spike_true","certainty":1},
+                        {"data": "ticker3", "end": 65613, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 122244, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 127081, "type":"spike_false","certainty":1},
+                        {"data": "ticker3", "end": 191170, "type":"spike_false","certainty":1},
+
+                    ]
+    },
+    {
+        "symbol": "NAVBTC",
+        "patterns":
+                    [
+                        {"data": "ticker2", "end": 114395, "type":"spike_true","certainty":1},
+                        {"data": "ticker2", "end": 78120, "type":"spike_false","certainty":1},
+                        {"data": "ticker2", "end": 145851, "type":"spike_false","certainty":1}
+                    ]
+    }
+    {
+        "symbol": "KNCBTC",
+        "patterns":
+                    [
+                        {"data": "ticker2", "end": 154168, "type":"spike_true","certainty":1},
+                        {"data": "ticker2", "end": 96194, "type":"spike_false","certainty":1},
+                        {"data": "ticker2", "end": 469868, "type":"spike_false","certainty":1},
+                        {"data": "ticker2", "end": 259362, "type":"spike_false","certainty":1}
+                    ]
+    },
+    {
+        "symbol": "GTOBTC",
+        "patterns":
+                    [
+                        {"data": "ticker2", "end": 187155, "type":"spike_true","certainty":1},
+                        {"data": "ticker2", "end": 93019, "type":"spike_false","certainty":1}
+                    ]
+    },
+    {
+        "symbol": "REQBTC",
+        "patterns":
+                    [
+                        {"data": "ticker2", "end": 114398, "type":"spike_true","certainty":1},
+                        {"data": "ticker2", "end": 128958, "type":"mrev_true","certainty":1}
+                        {"data": "ticker2", "end": 11394, "type":"spike_false","certainty":1}
+                    ]
+    }
+]
+

@@ -1,23 +1,43 @@
-Pattern and Trend Detection
---------------------------
-- Bu anomaly olayı değil. Mutlaka ama murlaka tredi ve spikeı rahatlı detect eden bir algoritma olması lazım
-- 2 durum var. 1 spike 1 trend. Bu ikisinin ayrı detect edilmesi lazım.
-- Bun yardımcı olabilir. DTW - pattern, Linear Regression - trend, ARIMA - trend, correlation - pattern
+###############
+ALGORITHM
+###############
+fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
+first_950 = fragment[:950]
+last_50 = fragment[-50:]
+last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
 
-SPIKE CONDITIONS
-------------------
-ticker1: LRC, SKY
-ticker2: BAND, REQ, NAV, GTO, KNC
+conditions[0]['buy_cond'] =(
+							(first_950.label_qav == 0).all() and
+							#kural1 - ilk 950 tanesi 0 olcak
+							(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1 and last_50_nodup_score.label_qav.iloc[-2] == 1) and
+							#kural2 - pattern 0la başlayıp 1le devam edecek, son iki tanesi 1 olcak
+							(
+								((fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > ((fragment_sum[fragment_sum['label_qav'] == 0].change_qav).sum() * 4)) or
+						   		((fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() + (fragment_sum[fragment_sum['label_qav'] ==0].change_qav).sum() > 15 )
+						   	) and
+						   	#kural3 - 1'lerın change_qav toplamı 0'ların toplamından 4 kat buyuk veya ikiside 3!twn buyuk
+						   	(fragment_sum[fragment_sum['label_qav'] == 0].change_qav).sum() > 0 and
+						   	(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 2 and
+						   	#kural4 - 0'ların toplamı 0'dan buyuk, 1'lerin toplamı 2'den buyuk olcak
+						   	fragment_sum.change_price.sum() > 3 and
+						   	#kural4 - 0'ların ve 1'lerin change price toplamıu 3'ten buyuk olcak
+						    trendline(last_50[last_50['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
+						    #kural5 - trendline yuksek olcak
+						    (fragment_sum.change_qav > 0).all() and (fragment_sum.change_price > 0).all()
+						    #kural6 - hem change_qav hem change_price 0dan buyuk olacak
+						   )
 
-
-SON ALOGIRTMA
-===============
+conditions[0]['sell_cond'] =(last['last_sma100'] < prev1['last_sma100'])
+###############
+RESULTS
+###############
+GEnel olarak
+- daha tam belli değil.
 Buldukları
 -----------
 ticker1:
 SKY+++
 ONG: 72339 sma100 9.32 sma600 -0.40
-
 ticker2:
 GTO+++
 KNC+
@@ -25,7 +45,6 @@ NAV.+
 POWR+++,
 BAND: sma100 0.96 sma600 9.25
 REQBTC: sma100 3.075 sma600 3.075
-
 Hiç Bulamadıkları
 --------------
 ticker1:  ARK, BLZ, NEBL, OAX, SYS
@@ -39,6 +58,19 @@ Yanlış Buldukları
 -----------
 NAV 114200 -114400 arası trendi analiz etcek algoritmaya ihtiyacın var.
 
+
+
+
+Pattern and Trend Detection
+--------------------------
+- Bu anomaly olayı değil. Mutlaka ama murlaka tredi ve spikeı rahatlı detect eden bir algoritma olması lazım
+- 2 durum var. 1 spike 1 trend. Bu ikisinin ayrı detect edilmesi lazım.
+- Bun yardımcı olabilir. DTW - pattern, Linear Regression - trend, ARIMA - trend, correlation - pattern
+
+SPIKE CONDITIONS
+------------------
+ticker1: LRC, SKY
+ticker2: BAND, REQ, NAV, GTO, KNC
 
 
 GRUPLAMA YANLIŞ ÇALIŞIYOR!!!!!!

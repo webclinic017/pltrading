@@ -14,13 +14,13 @@ screen -r 787.backtest
 screen -XS 787.backtest quit
 ctrl + a + d  ---> disconnect (detach) from screen
 
-disk usage size of directory ----> du -hs /home/ubuntu/datacollect
+disk usage size of directory ----> du -hs /home/ubuntu/bot/data
 disk space in human readable------> df -h
 disk usage -------------> du -chd 1 | sort -h
 delete files ---> find . -type f -iname \*.jpg -delete
 
 
-copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/datacollect /Users/apple/Desktop/dev/projectlife/data/newticker
+copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data /Users/apple/Desktop/dev/projectlife/data/ticker3
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/projectlife/hf /Users/apple/Desktop/dev/projectlife/hf/copy
 
 

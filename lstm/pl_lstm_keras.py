@@ -4,7 +4,10 @@ import numpy as np
 import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.layers import Flatten
+from keras.layers import Dropout
 from keras.layers import LSTM
+from keras.utils import to_categorical
 from keras.preprocessing import sequence
 from pathlib import Path
 from matplotlib import pyplot as plt
@@ -54,19 +57,26 @@ print('Y_train.shape:', Y_train.shape)
 print('X_test.shape:', X_test.shape)
 print('Y_test.shape:', Y_test.shape)
 
+verbose, epochs, batch_size = 1, 5, 1
+n_timesteps, n_features, n_outputs = X_train.shape[1],1,1
+
 model = Sequential()
-model.add(LSTM(200, input_shape=(73, 1)))
-model.add(Dense(1, activation='softmax'))
-model.compile(loss='mse', optimizer='sgd', metrics=['accuracy'])
+model.add(LSTM(100, input_shape=(n_timesteps,n_features)))
+model.add(Dropout(0.5))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(n_outputs, activation='softmax'))
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+
 print(model.summary())
 
 # Train model
-history = model.fit(X_train, Y_train, epochs=10, batch_size=1)
-
+history = model.fit(X_train, Y_train, epochs=epochs, batch_size=batch_size, verbose=verbose)
 # Evaluate model
-scores = model.evaluate(X_test, Y_test, verbose=0)
+scores = model.evaluate(X_test, Y_test,   batch_size=batch_size, verbose=verbose)
+
+
 print("Accuracy: %.2f%%" % (scores[1]*100))
 probs = model.predict(X_test)
 predicted = probs.argmax(axis=1)
-pdb.set_trace()
+#pdb.set_trace()
 

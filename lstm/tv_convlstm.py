@@ -83,7 +83,7 @@ def evaluate_model(trainX, trainy, testX, testy):
     # fit network
     model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, verbose=verbose)
     # evaluate model
-    pdb.set_trace()
+    #pdb.set_trace()
     _, accuracy = model.evaluate(testX, testy, batch_size=batch_size, verbose=0)
     return accuracy
 

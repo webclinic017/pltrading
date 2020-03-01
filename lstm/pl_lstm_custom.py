@@ -18,14 +18,14 @@ middle_window_size = 72
 interval = "5m"
 labels = ['neutral', 'pattern']
 modelname = 'my_bestmodel.h5'
-resultpath = os.path.join('.', 'results/models')
+resultpath = '/Users/apple/Desktop/dev/projectlife/lstm/results/models'
 model_path = os.path.join(resultpath,modelname)
 outputfile = os.path.join(resultpath, 'modelcomparison.json')
 np.set_printoptions(threshold=sys.maxsize)
 X_train, Y_train,  X_test, Y_test = [],[],[],[]
-train_start_date = pd.to_datetime("2018-05-01 00:00")
-test_start_date = pd.to_datetime("2019-03-01 00:00")
-with open('/Users/apple/Desktop/dev/projectlife/utils/classification/strict_patterns.json') as json_file:
+train_start_date = pd.to_datetime("2018-09-27 00:00")
+test_start_date = pd.to_datetime("2019-02-09 00:00")
+with open("/Users/apple/Desktop/dev/projectlife/lstm/strict_patterns2.json") as json_file:
     data = json.load(json_file)
     for elem in data:
         symbol = elem['symbol']
@@ -84,7 +84,6 @@ model.add(LSTM(100, input_shape=(n_timesteps,n_features)))
 model.add(Dropout(0.5))
 model.add(Dense(100, activation='relu'))
 model.add(Dense(n_outputs, activation='softmax'))
-pdb.set_trace()
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 # fit network
 
