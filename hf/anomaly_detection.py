@@ -82,7 +82,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS =["NAVBTC","KNCBTC","GTOBTC", "REQBTC"]
+	SYMBOLS =["GTOBTC"]#["NAVBTC","KNCBTC","GTOBTC", "REQBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s and ".DS_Store" not in s:
@@ -119,13 +119,13 @@ def backtest():
 		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 
 		# df_x = df
-		# df = df.iloc[63931:64932]
+		# df = df.iloc[47927:48928]
 		# fragment = detect_anomaly(df)
 		# fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
 		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
 		# print(fragment_sum)
-		# plot_whole(df_x)
-		# #pdb.set_trace()
+		# #plot_whole(df_x)
+		# pdb.set_trace()
 
 		df = df.reset_index()
 		df = df.fillna(0)
@@ -148,22 +148,30 @@ def backtest():
 				first_980 = fragment[:980]
 				last_20 = fragment[-20:]
 				last_20_nodup_score = last_20.drop_duplicates(subset="score_qav")
-
+				#pdb.set_trace()
 				conditions[0]['buy_cond'] =(
 											(first_980.label_qav == 0).all() and
 											#kural1 - ilk 980 tanesi 0 olcak
-											len(fragment_sum) >= 3 and
-											fragment_sum.label_qav.iloc[0] == 0 and (fragment_sum.label_qav.iloc[-1] == 1 and fragment_sum.label_qav.iloc[-2] == 1) and
+											len(fragment_sum) >= 2 and
+											fragment_sum.label_qav.iloc[0] == 0 and (fragment_sum.label_qav.iloc[-1] == 1) and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([0, 1, 0]))) == 0 and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 1]))) == 0 and
+											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1]))) == 0 and
+											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 1]))) == 0 and
+											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 0, 1]))) == 0 and
 										   	#011  veya benzeri patternlar olcak
 										   	(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 5 and
-										   	#kural3 - 0'ların ve 1'lerin change price toplamıu 3'ten buyuk olcak
-										    trendline(last_20[last_20['label_qav'] == 1].total_traded_quote_asset_volume) > 0 #and
-										    #kural4 - trendline yuksek olcak
+										   	#kural3 - 1'lerin change_qav toplamıu 5'ten buyuk olcak
+										    # trendline(last_20[last_20['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
+										    # #kural4 - trendline yuksek olcak
+										    (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() > 1 and
+										    (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() < 10 and
+										    #kural5 - 1'lerin change_price toplamıu 1'den buyuk 10'dan kucuk olcak
+										    not (fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_decreasing and (len(fragment_sum[fragment_sum['label_qav'] == 1]) >1))
+										    #kural6 - change_qav azalıyor olmicak
 										   )
 
-				conditions[0]['sell_cond'] =(last['last_sma200'] < prev1['last_sma200'])
+				conditions[0]['sell_cond'] =(last['last_sma100'] < prev1['last_sma100'])
 
 
 				for ic, cond in enumerate(conditions):

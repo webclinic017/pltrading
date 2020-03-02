@@ -1,0 +1,10 @@
+[
+    {
+        "symbol": "REQBTC",
+        "patterns":
+                    [
+                        {"data": "ticker2", "end": 128958, "type":"meanrv_true","certainty":1}
+                    ]
+    }
+]
+

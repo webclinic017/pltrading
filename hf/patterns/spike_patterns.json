@@ -1,0 +1,28 @@
+[
+    {"symbol": "STXBTC","data": "ticker3", "end": 13706, "type":"spike_true","certainty":1},
+    {"symbol": "STXBTC","data": "ticker3", "end": 52279, "type":"spike_false","certainty":1},
+    {"symbol": "STXBTC","data": "ticker3", "end": 56747, "type":"spike_false","certainty":1},
+    {"symbol": "STXBTC","data": "ticker3", "end": 88530, "type":"spike_false","certainty":1},
+    {"symbol": "STXBTC","data": "ticker3", "end": 98532, "type":"spike_false","certainty":1},
+    {"symbol": "DUSKBTC","data": "ticker3", "end": 54780, "type":"spike_true","certainty":1},
+    {"symbol": "DUSKBTC","data": "ticker3", "end": 65458, "type":"spike_false","certainty":1},
+    {"symbol": "DUSKBTC","data": "ticker3", "end": 83159, "type":"spike_false","certainty":1},
+    {"symbol": "DUSKBTC","data": "ticker3", "end": 91960, "type":"spike_false","certainty":1},
+    {"symbol": "DUSKBTC","data": "ticker3", "end": 124100, "type":"spike_false","certainty":1},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 11065, "type":"spike_true","certainty":1},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 65613, "type":"spike_false","certainty":1},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 122244, "type":"spike_false","certainty":1},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 127081, "type":"spike_false","certainty":1},
+    {"symbol": "NAVBTC","data": "ticker2", "end": 114395, "type":"spike_true","certainty":1},
+    {"symbol": "NAVBTC","data": "ticker2", "end": 78120, "type":"spike_false","certainty":1},
+    {"symbol": "NAVBTC","data": "ticker2", "end": 145851, "type":"spike_false","certainty":1},
+    {"symbol": "KNCBTC","data": "ticker2", "end": 154168, "type":"spike_true","certainty":1},
+    {"symbol": "KNCBTC","data": "ticker2", "end": 96194, "type":"spike_false","certainty":1},
+    {"symbol": "KNCBTC","data": "ticker2", "end": 469868, "type":"spike_false","certainty":1},
+    {"symbol": "KNCBTC","data": "ticker2", "end": 259362, "type":"spike_false","certainty":1},
+    {"symbol": "GTOBTC","data": "ticker2", "end": 187155, "type":"spike_true","certainty":1},
+    {"symbol": "GTOBTC","data": "ticker2", "end": 93019, "type":"spike_false","certainty":1},
+    {"symbol": "REQBTC","data": "ticker2", "end": 11394, "type":"spike_false","certainty":1},
+    {"symbol": "REQBTC","data": "ticker2", "end": 114398, "type":"predict_true","certainty":1}
+]
+
