@@ -25,9 +25,10 @@ copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data 
 
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data/KNDBTC.csv /Users/apple/Desktop/dev/projectlife/data/ticker3
 
+                              scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data /home/canercak_gmail_com/data
+
 
 scp canercak@192.168.1.3:/home/canercak/Desktop/dev/projectlife/hf/output.out /Users/apple/Desktop/dev/projectlife/hf/copy
-
 
 
 #####################################################
@@ -322,6 +323,9 @@ gcloud compute --project "projectlife" ssh --zone "us-west1-b" "tensorflow-3-vm"
 gcloud compute --project "projectlife" ssh --zone "us-east1-c" "generalpurpose"
 
 
+gcloud compute --project "projectlife" ssh --zone "us-east1-c" "instance-1"
+
+
 Yuklenecekler 1
 =============
 sudo apt update
@@ -341,6 +345,9 @@ sudo pip3 install python-binance
 sudo pip3 install ccxt
 sudo pip3 install unicorn-fy
 sudo pip3 install unicorn-binance-websocket-api
+sudo pip3 install pyod
+sudo pip3 install statsmodels
+
 
 
 Yuklenecekler 2

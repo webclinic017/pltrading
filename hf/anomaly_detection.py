@@ -37,8 +37,6 @@ import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose
 from scipy.stats import norm, mstats
 from datetime import datetime, timedelta
-from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-import plotly.graph_objs as go
 import os
 pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
@@ -125,7 +123,7 @@ def backtest():
 		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
 		# print(fragment_sum)
 		# #plot_whole(df_x)
-		# pdb.set_trace()
+		pdb.set_trace()
 
 		df = df.reset_index()
 		df = df.fillna(0)
@@ -182,17 +180,17 @@ def backtest():
 					if cond['buy_mode'] and cond['buy_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS BUYING....")
 						conditions[ic]['action'] = BUY
-						conditions[ic]['entry_price']  =  current_bid_price
+						conditions[ic]['entry_price']  =  current_ask_price
 						conditions[ic]['buy_mode'] = False
 						printLog("##### TRADE " +  str(cond['trade_count']) + " #####")
 						printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
 						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
 						printLog(fragment_sum)
-						#pdb.set_trace()
+						pdb.set_trace()
 					elif not cond['buy_mode'] and cond['sell_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS SELLING....")
 						conditions[ic]['action'] = SELL
-						exit_price =  current_ask_price
+						exit_price =  current_bid_price
 						profit = ((exit_price - cond['entry_price'])/cond['entry_price'] + 1)*(1-transaction_fee)**2 - 1
 						conditions[ic]['balance'] = conditions[ic]['balance'] * (1.0 + profit)
 						conditions[ic]['trade_count'] += 1
