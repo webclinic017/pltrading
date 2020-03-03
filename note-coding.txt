@@ -23,6 +23,8 @@ delete files ---> find . -type f -iname \*.jpg -delete
 copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data /Users/apple/Desktop/dev/projectlife/data/ticker3
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/projectlife/hf /Users/apple/Desktop/dev/projectlife/hf/copy
 
+                              scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data/KNDBTC.csv /Users/apple/Desktop/dev/projectlife/data/ticker3
+
 
 scp canercak@192.168.1.3:/home/canercak/Desktop/dev/projectlife/hf/output.out /Users/apple/Desktop/dev/projectlife/hf/copy
 

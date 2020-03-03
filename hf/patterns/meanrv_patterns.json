@@ -1,10 +1,5 @@
 [
-    {
-        "symbol": "REQBTC",
-        "patterns":
-                    [
-                        {"data": "ticker2", "end": 128958, "type":"meanrv_true","certainty":1}
-                    ]
-    }
+	{"symbol": "REQBTC",  "data": "ticker2", "end": 128958, "type":"meanrv_true","certainty":1},
+	{"symbol": "ENGBTC", "data": "ticker2", "end": 156285, "type":"meanrv_true","certainty":1}
 ]
 

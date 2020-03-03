@@ -137,6 +137,11 @@ predicted = yPredicted.argmax(axis=1)
 print(predicted)
 
 
+probs = model.predict(test_data)
+predicted_test = probs.argmax(axis=1)
+print(predicted_test)
+
+
 
 # Plotting the training accuracy and loss
 
