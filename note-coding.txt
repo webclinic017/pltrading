@@ -6,6 +6,12 @@ linode server
 ssh ubuntu@172.81.178.30
 password: mEMAnkZ9sy9PlJLh
 
+google compute - close 26 march
+---------------
+gcloud compute --project "projectlife" ssh --zone "us-east1-c" "instance-1"
+gcloud compute copy-files instance-1:/home/canercak_gmail_com/projectlife/logs/output.out --zone us-east1-c /Users/apple/Desktop/dev
+
+
 
 screen -S data_collector -> new screen
 screen -ls  ---> list running screens
@@ -22,10 +28,18 @@ delete files ---> find . -type f -iname \*.jpg -delete
 
 copy folder from remote---->  scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data /Users/apple/Desktop/dev/projectlife/data/ticker3
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/projectlife/hf /Users/apple/Desktop/dev/projectlife/hf/copy
-
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data/KNDBTC.csv /Users/apple/Desktop/dev/projectlife/data/ticker3
-
                               scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data /home/canercak_gmail_com/data
+                              scp -r ubuntu@172.81.178.30:/home/ubuntu/bot/data/AEBTC.csv /Users/apple/Desktop/dev/projectlife/data/ticker3
+
+CTXCBTC
+AMBBTC
+IOTXBTC
+TNBBTC
+ERDBTC
+NULSBTC
+MFTBTC
+AEBTC
 
 
 scp canercak@192.168.1.3:/home/canercak/Desktop/dev/projectlife/hf/output.out /Users/apple/Desktop/dev/projectlife/hf/copy
@@ -323,9 +337,6 @@ gcloud compute --project "projectlife" ssh --zone "us-west1-b" "tensorflow-3-vm"
 gcloud compute --project "projectlife" ssh --zone "us-east1-c" "generalpurpose"
 
 
-gcloud compute --project "projectlife" ssh --zone "us-east1-c" "instance-1"
-
-
 Yuklenecekler 1
 =============
 sudo apt update
@@ -386,6 +397,7 @@ Remotedan lokale kopya
 ======================
 zip -r ltcrainbow.zip Projectlife-v1-LTCBTC-1h-RAINBOWCUSTOM-close-sma20
 gcloud compute copy-files tensorflow-3-vm:/home/canercak_gmail_com/ray_results/ltcrainbow.zip --zone us-west1-b /Users/apple/Desktop/dev
+
 
 Screen kullanımı
 ================

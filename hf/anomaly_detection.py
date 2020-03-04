@@ -80,7 +80,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS =["TFUELBTC"]#["NAVBTC","KNCBTC","GTOBTC", "REQBTC"]
+	SYMBOLS =["KMDBTC"]#["NAVBTC","KNCBTC","GTOBTC", "REQBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s and ".DS_Store" not in s:
@@ -110,6 +110,7 @@ def backtest():
 		df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
 		df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
 		df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
+		df['last_sma50'] = df.last_price.rolling(50).mean()
 		df['last_sma100'] = df.last_price.rolling(100).mean()
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma400'] = df.last_price.rolling(400).mean()
@@ -117,13 +118,13 @@ def backtest():
 		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 
 		df_x = df
-		df = df.iloc[28024:30724]
+		df = df.iloc[304071:306371]
 		# fragment = detect_anomaly(df)
 		# fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
 		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
 		# print(fragment_sum)
-		# #plot_whole(df_x)
-		pdb.set_trace()
+		plot_whole(df_x)
+		#pdb.set_trace()
 
 		df = df.reset_index()
 		df = df.fillna(0)
@@ -171,7 +172,7 @@ def backtest():
 										    #kural6 - change_qav azalıyor olmicak. Bu kuralı kapatıyorum. sortun yaratıyor. ticker3dnt14569 gibi durumlar oluyor.
 										   )
 
-				conditions[0]['sell_cond'] =(last['last_sma600'] < prev1['last_sma600'])
+				conditions[0]['sell_cond'] =(last['last_sma100'] < prev1['last_sma100'])
 				#bu durum ticker2mco291249 100'de 1.5 yaparken 600 6.5 yapıyor bazende tam tersi oluyr.
 				#gordugum kadarıyla yuksek sipikedan sonra 100'luk hafif spikedan sonra 600 daha iyi alıyor ama test etmek lazım.
 
@@ -186,7 +187,7 @@ def backtest():
 						printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
 						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
 						printLog(fragment_sum)
-						pdb.set_trace()
+						#pdb.set_trace()
 					elif not cond['buy_mode'] and cond['sell_cond']:
 						printLog("CONDITION " + str(ic+1) +" IS SELLING....")
 						conditions[ic]['action'] = SELL
