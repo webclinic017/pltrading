@@ -1,53 +1,23 @@
-//1. Hedef: true patternları maximum sayıda tutarken false patternalrı minimum sayıyya indirmek
-//2. hızlı backtest yapmanın bir yolunu bulmak.
+
 [
-    {"symbol": "REQBTC","data": "ticker1", "end": 114398, "type":"spike_true","certainty":1},
-    {"symbol": "NAVBTC","data": "ticker2", "end": 114395, "type":"spike_true","certainty":1},
-    {"symbol": "KNCBTC","data": "ticker2", "end": 154168, "type":"spike_true","certainty":1},
+    {"symbol": "KNCBTC","data": "ticker2", "end": 154168, "type":"spike_half","certainty":2, "notes":"belki buna cevap vermen gerekecek incele"},
     {"symbol": "GTOBTC","data": "ticker2", "end": 187155, "type":"spike_true","certainty":1},
     {"symbol": "REQBTC","data": "ticker2", "end": 64931, "type":"spike_true","certainty":1},
+    {"symbol": "GRSBTC","data": "ticker2", "end": 161452, "type":"spike_true","certainty":1, "notes":"az kalkmış az kazanıyor"},
+    {"symbol": "NEBLBTC","data": "ticker2", "end": 171557, "type":"spike_true","certainty":1},
+    {"symbol": "MCOBTC","data": "ticker2", "end": 291249, "type":"spike_half","certainty":2, "notes":"belki buna cevap vermen gerekecek incele"},
+    {"symbol": "EDOBTC","data": "ticker2", "end": 301507, "type":"spike_true","certainty":1, "notes":"çok geç alıyor"},
     {"symbol": "STXBTC","data": "ticker3", "end": 13706, "type":"spike_true","certainty":1},
     {"symbol": "DUSKBTC","data": "ticker3", "end": 54780, "type":"spike_true","certainty":1},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 122244, "type":"spike_true","certainty":1, "notes":"ucundan kurtarıyor"},
     {"symbol": "SYSBTC","data": "ticker3", "end": 11065, "type":"spike_true","certainty":1},
-    {"symbol": "AMBBTC","data": "ticker3", "end": 124348, "type":"spike_true","certainty":1},
-    {"symbol": "DNTBTC","data": "ticker3", "end": 14565, "type":"spike_true","certainty":1},
-    {"symbol": "EDOBTC","data": "ticker2", "end": 301507, "type":"spike_true","certainty":1},
-    {"symbol": "TFUELBTC","data": "ticker2", "end": 29113, "type":"spike_true","certainty":1},
-    {"symbol": "GRSBTC","data": "ticker2", "end": 161452, "type":"spike_true","certainty":1},
-    {"symbol": "NEBLBTC","data": "ticker2", "end": 171557, "type":"spike_true","certainty":1},
-    {"symbol": "MCOBTC","data": "ticker2", "end": 291249, "type":"spike_true","certainty":1},
-    {"symbol": "BANDBTC","data": "ticker2", "end": 183661, "type":"spike_true","certainty":1},
-    {"symbol": "RCNBTC","data": "ticker3", "end": 200129, "type":"spike_true","certainty":1},
-    {"symbol": "GRSBTC","data": "ticker3", "end": 155100, "type":"spike_true","certainty":1},
-     {"symbol": "CVCBTC","data": "ticker3", "end": 35275, "type":"spike_false","certainty":1}
+    {"symbol": "AMBBTC","data": "ticker3", "end": 124348, "type":"spike_true","certainty":1, "notes":"çok geç alıyor"},
+    {"symbol": "GRSBTC","data": "ticker3", "end": 155100, "type":"spike_true","certainty":2, "notes":"çok az kazanıyor"},
 
-    {"symbol": "KMDBTC","data": "ticker2", "end": 305372, "type":"spike_false","certainty":1},
-    {"symbol": "NXSBTC","data": "ticker2", "end": 108119, "type":"spike_false","certainty":1},
-    {"symbol": "NXSBTC","data": "ticker2", "end": 209967, "type":"spike_false","certainty":1},
-    {"symbol": "NXSBTC","data": "ticker2", "end": 234376, "type":"spike_false","certainty":1},
-    {"symbol": "LRCBTC","data": "ticker2", "end": 334579, "type":"spike_false","certainty":1},
-    {"symbol": "GXSBTC","data": "ticker2", "end": 324075, "type":"spike_false","certainty":1},
-    {"symbol": "STORJBTC","data": "ticker2", "end": 188784, "type":"spike_false","certainty":1},
-    {"symbol": "SYSBTC","data": "ticker3", "end": 122244, "type":"spike_false","certainty":1, "notes":"bunun patternda sorun yok. sadece1 011 uymuyor"},
-    {"symbol": "SYSBTC","data": "ticker3", "end": 124271, "type":"spike_false","certainty":1},
-    {"symbol": "DUSKBTC","data": "ticker3", "end": 152981, "type":"spike_false","certainty":1},
-    {"symbol": "DUSKBTC","data": "ticker3", "end": 124110, "type":"spike_false","certainty":1},
-    {"symbol": "CTXCBTC","data": "ticker3", "end": 191424, "type":"spike_false","certainty":1},
-    {"symbol": "AMBBTC","data": "ticker3", "end": 62630, "type":"spike_false","certainty":1},
-    {"symbol": "AMBBTC","data": "ticker3", "end": 37155, "type":"spike_false","certainty":1},
-    {"symbol": "NULSBTC","data": "ticker3", "end": 19183, "type":"spike_false","certainty":1},
-    {"symbol": "NULSBTC","data": "ticker3", "end": 5021, "type":"spike_false","certainty":1},
-    {"symbol": "AEBTC","data": "ticker3", "end": 293082, "type":"spike_false","certainty":1},
-    {"symbol": "RCNBTC","data": "ticker3", "end": 188624, "type":"spike_false","certainty":1},
-    {"symbol": "CVCBTC","data": "ticker3", "end": 36746, "type":"spike_false","certainty":1},
-    {"symbol": "CVCBTC","data": "ticker3", "end": 173922, "type":"spike_false","certainty":1, "notes": "4 change_qav az geliyor"},
-    {"symbol": "XMRBTC","data": "ticker3", "end": 89568, "type":"spike_false","certainty":1, "notes": "4 change_qav az geliyor"},
-    {"symbol": "XZCBTC","data": "ticker3", "end": 16170, "type":"spike_false","certainty":1, "notes": "4 change_qav az geliyor"},
-
-
-
-
-
+    {"symbol": "GXSBTC","data": "ticker2", "end": 324075, "type":"spike_false","certainty":1, "notes": "1 birler fazla"},
+    {"symbol": "AMBBTC","data": "ticker3", "end": 62630, "type":"spike_false","certainty":1, "notes": "çok iyi pattern ama birler fazla"},
+    {"symbol": "AEBTC","data": "ticker3", "end": 293082, "type":"spike_false","certainty":1, "notes": "yeteri kadar kalkmamış."},
+    {"symbol": "CVCBTC","data": "ticker3", "end": 35275, "type":"spike_false","certainty":1, "notes": "arkası çok oynak ve yeteri kadar kalkmamış."}
 
 ]
 

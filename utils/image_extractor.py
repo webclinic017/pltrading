@@ -31,7 +31,7 @@ def plot_whole(df,end,pattern,window):
     axes[0].plot(window,fragment.iloc[-1-lookforward].total_traded_quote_asset_volume,'g*',color="red")
     axes[1].plot(window,fragment.iloc[-1-lookforward].last_price,'g*',color="red")
     #plt.show()
-    main_path = "/Users/apple/Desktop/dev/projectlife/hf/patterns/"
+    main_path = "/Users/apple/Desktop/dev/projectlife/images/"
     path = main_path + pattern + "/"+symbol+"-"+str(end)+"-"+str(window)+".png"
     plt.savefig(path)
 
@@ -50,6 +50,4 @@ with open('/Users/apple/Desktop/dev/projectlife/hf/patterns/spike_patterns.json'
 
         plot_whole(df,pattern["end"], pattern['type'],1000)
         plot_whole(df,pattern["end"],pattern['type'],2000)
-        plot_whole(df,pattern["end"],pattern['type'],3000)
-        plot_whole(df,pattern["end"],pattern['type'],4000)
 

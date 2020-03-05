@@ -1,0 +1,8 @@
+[
+    {"symbol": "ARKBTC","data": "ticker1", "end": 343800, "type":"inc_true", "certainty":1 },
+    {"symbol": "WRXBTC","data": "ticker3", "end": 442113, "type":"inc_true", "certainty":1 },
+    {"symbol": "CVCBTC","data": "ticker3", "end": 278788, "type":"inc_true","certainty":1 },
+    {"symbol": "NAVBTC","data": "ticker2", "end": 114395, "type":"inc_true","certainty":1},
+    {"symbol": "BANDBTC","data": "ticker2", "end": 183661, "type":"spike_true","certainty":1 }
+]
+
