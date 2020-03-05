@@ -45,7 +45,7 @@ pd.options.mode.chained_assignment = None
 base_path = "/home/canercak/Desktop/dev/projectlife"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
 	base_path = "/Users/apple/Desktop/dev/projectlife"
-path = base_path +"/data/ticker2/"
+path = base_path +"/data/ticker3/"
 
 datatype ="local"
 transaction_fee = 0.00125
@@ -80,7 +80,7 @@ def plot_symbols():
 		plot_whole(df)
 
 def backtest():
-	SYMBOLS =["KMDBTC"]#["NAVBTC","KNCBTC","GTOBTC", "REQBTC"]
+	SYMBOLS =["DUSKBTC"]#["NAVBTC","KNCBTC","GTOBTC", "REQBTC"]
 	# dir = os.listdir(path)
 	# for s in dir:
 	# 	if ".py" not in s and ".DS_Store" not in s:
@@ -118,13 +118,13 @@ def backtest():
 		df['last_sma1000'] = df.last_price.rolling(1000).mean()
 
 		df_x = df
-		df = df.iloc[304071:306371]
+		df = df.iloc[123099:125110]
 		# fragment = detect_anomaly(df)
 		# fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
 		# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(1000))
 		# print(fragment_sum)
 		plot_whole(df_x)
-		#pdb.set_trace()
+		# #pdb.set_trace()
 
 		df = df.reset_index()
 		df = df.fillna(0)
@@ -153,21 +153,21 @@ def backtest():
 				conditions[0]['buy_cond'] =(
 											(first_980.label_qav == 0).all() and
 											#kural1 -   2000 ticker2sys124271 gibi durumları kurtayor ama req64936 gibi ama geç aldırıyor ve bazılarını hiç aldırmıyor. GEç alıp kaybetmemek ve alman gerekini almak için 1000.
-											len(fragment_sum) >= 3 and
-											(fragment_sum.label_qav.iloc[0] == 0 and fragment_sum.label_qav.iloc[-1] == 1 and fragment_sum.label_qav.iloc[-2] == 1) and
+											len(fragment_sum) >= 2 and
+											(fragment_sum.label_qav.iloc[0] == 0 and fragment_sum.label_qav.iloc[-1] == 1  ) and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([0, 1, 0]))) == 0 and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 1]))) == 0 and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1]))) == 0 and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1, 1]))) == 0 and
 											len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 1, 1]))) == 0 and
-										   	#kural2 - en az 011 veya fazlası patternlar olcak. Kesinlikle 01 olamaz
-										   	(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 4 and
-										   	#kural3 - 1'lerin change_qav toplamıu 4'ten buyuk olcak. Onceden 5'ti onemli yerleri kacırıyor.
+										   	#kural2 - en az 011 veya fazlası patternlar olcak. Kesinlikle 01 olamaz. Kesinlikle 01 olur obur turlu geç alıp kaybediyor. Onemlş lan arkadan nasıl geldiği
+										   	(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 5 and
+										   	#kural3 - 1'lerin change_qav toplamıu 4'ten buyuk olcak. Onceden 5'ti onemli yerleri kacırıyor. 4 olamaz. 5ten bile fazla olması lazım
 										    # trendline(last_20[last_20['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
 										    # #kural4 - trendline yuksek olcak
-										    (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() > 0.5 and
+										    (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() > 0 and
 										    (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() < 10 #and
-										    #kural5 - 1'lerin change_price toplamıu 0.5'den buyuk 10'dan kucuk olcak. 1'e dikkat daha fazla yapmaman lazım gibi.
+										    #kural5 - 1'lerin change_price toplamıu 0.5'den buyuk 10'dan kucuk olcak. 1 dedin geç aldı 0.5 dedin geç aldı en iyisi 0. onemli olan change_qav
 										    #(not fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_decreasing)
 										    #kural6 - change_qav azalıyor olmicak. Bu kuralı kapatıyorum. sortun yaratıyor. ticker3dnt14569 gibi durumlar oluyor.
 										   )

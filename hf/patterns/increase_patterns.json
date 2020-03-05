@@ -1,0 +1,5 @@
+[
+    {"symbol": "WRXBTC","data": "ticker3", "end": 442113, "win":true, "certainty":1 },
+    {"symbol": "CVCBTC","data": "ticker3", "end": 278788, "win":false,"certainty":1 }
+]
+
