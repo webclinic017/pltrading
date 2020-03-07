@@ -3,4 +3,6 @@ logs
 images
 notes
 utils
+.gitignore
+config.ini
 

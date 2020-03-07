@@ -4,8 +4,10 @@ import pdb
 from unicorn_fy.unicorn_fy import UnicornFy
 import csv
 import ccxt
-exchange = ccxt.binance({'apiKey': "H9XUAlGqmqy9JSoHgp3BmBlv02Z1zYxeMA4aU6l66wtGBVs8Ki6789sRgErpf1wC", 'secret': "e9ueiRyLpDV96l3RMaircqvVvMOT0ygGyZmqEUnyf3IXjBulAp24MMQviygoagiZ"})
+exchange = ccxt.binance({'apiKey': config['binance_key'], 'secret': config['binance_secret']})
 exchange.load_markets ()
+config = ConfigParser()
+config.read("config.ini")
 EXCLUDE_SYMBOLS = "NCASHBTC,ONEBTC,DOGEBTC,POEBTC,MFTBTC,DREPBTC,COCOSBTC,IOTXBTC,SNGLSBTC,ERDBTC,QKCBTC,TNBBTC,CELRBTC,TUSDBTC,ANKRBTC,HOTBTC,WPRBTC,QSPBTC,SNMBTC,HSRBTC,VENBTC,MITHBTC,CNDBTC,BCCBTC,DOCKBTC,DENTBTC,FUELBTC,BTCBBTC,SALTBTC,KEYBTC,SUBBTC,TCTBTC,CDTBTC,IOSTBTC,TRIGBTC,VETBTC,TROYBTC,NPXSBTC,BTTBTC,SCBBTC,WINBTC,RPXBTC,MODBTC,WINGSBTC,BCNBTC,PHXBTC,XVGBTC,FTMBTC,PAXBTC,ICNBTC,ZILBTC,CLOAKBTC,DNTBTC,TFUELBTC,PHBBTC,CHATBTC,STORMBTC"
 symbols = exchange.symbols
 btc_symbols = []
