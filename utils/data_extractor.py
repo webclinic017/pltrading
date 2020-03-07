@@ -53,42 +53,21 @@ def backtest():
 
 		df = df.reset_index()
 		df = df.fillna(0)
-		window_size = 1000
-
-		np1 = np.zeros((1000,18))
-		np2 = np.zeros((2000,18))
-		np3 = np.zeros((3000,18))
-		np4 = np.zeros((4000,18))
-
+		window_size = 2000
+		#np1 = np.zeros((window_size,18))
+		arr = []
 		for i, row in df.iterrows():
-			if i > window_size*4:
+			if i > window_size:
 				fragment1 = df.iloc[i-window_size:i,:]
 				fragment1 = detect_anomaly(fragment1)
 				fragment1 = fragment1.reset_index()
-				np_temp = fragment1.to_numpy()
-				np1 =  np.dstack((np1,np_temp))
-
-				fragment2 = df.iloc[i-(window_size*2):i,:]
-				fragment2 = detect_anomaly(fragment2)
-				fragment2 = fragment2.reset_index()
-				np_temp = fragment2.to_numpy()
-				np2 =  np.dstack((np2,np_temp))
-
-				fragment3 = df.iloc[i-(window_size*3):i,:]
-				fragment3 = detect_anomaly(fragment3)
-				fragment3 = fragment3.reset_index()
-				np_temp = fragment3.to_numpy()
-				np3 =  np.dstack((np3,np_temp))
-
-				fragment4 = df.iloc[i-(window_size*4):i,:]
-				fragment4 = detect_anomaly(fragment4)
-				fragment4 = fragment4.reset_index()
-				np_temp = fragment4.to_numpy()
-				np4 =  np.dstack((np4,np_temp))
-
+				arr.append(fragment1)
+				#np_temp = fragment1.to_numpy()
+				#np1 =  np.dstack((np1,np_temp))
 				if i % 1000 == 0:
 					print(symbol+"-"+str(row['index']))
-					np.savez_compressed(symbol,np1,np2,np3,np4)
+					pdb.set_trace()
+					#np.savez_compressed(symbol,np1)
 
 
 

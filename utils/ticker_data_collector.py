@@ -6,6 +6,7 @@ import csv
 import ccxt
 exchange = ccxt.binance({'apiKey': "H9XUAlGqmqy9JSoHgp3BmBlv02Z1zYxeMA4aU6l66wtGBVs8Ki6789sRgErpf1wC", 'secret': "e9ueiRyLpDV96l3RMaircqvVvMOT0ygGyZmqEUnyf3IXjBulAp24MMQviygoagiZ"})
 exchange.load_markets ()
+EXCLUDE_SYMBOLS = "NCASHBTC,ONEBTC,DOGEBTC,POEBTC,MFTBTC,DREPBTC,COCOSBTC,IOTXBTC,SNGLSBTC,ERDBTC,QKCBTC,TNBBTC,CELRBTC,TUSDBTC,ANKRBTC,HOTBTC,WPRBTC,QSPBTC,SNMBTC,HSRBTC,VENBTC,MITHBTC,CNDBTC,BCCBTC,DOCKBTC,DENTBTC,FUELBTC,BTCBBTC,SALTBTC,KEYBTC,SUBBTC,TCTBTC,CDTBTC,IOSTBTC,TRIGBTC,VETBTC,TROYBTC,NPXSBTC,BTTBTC,SCBBTC,WINBTC,RPXBTC,MODBTC,WINGSBTC,BCNBTC,PHXBTC,XVGBTC,FTMBTC,PAXBTC,ICNBTC,ZILBTC,CLOAKBTC,DNTBTC,TFUELBTC,PHBBTC,CHATBTC,STORMBTC"
 symbols = exchange.symbols
 btc_symbols = []
 for symbol in symbols:
@@ -29,7 +30,9 @@ while True:
                 unicorn_fied_stream_data['data'][0]['best_ask_price'],
                 unicorn_fied_stream_data['data'][0]['total_traded_base_asset_volume'],
                 unicorn_fied_stream_data['data'][0]['total_traded_quote_asset_volume']]
-        with open("/home/ubuntu/bot/data/" + symbol + '.csv', 'a') as f:
-            writer = csv.writer(f)
-            writer.writerow(fields)
+
+        if symbol not in EXCLUDE_SYMBOLS:
+            with open("/home/ubuntu/bot/data/" + symbol + '.csv', 'a') as f:
+                writer = csv.writer(f)
+                writer.writerow(fields)
 

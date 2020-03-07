@@ -7,63 +7,60 @@ from pandas import DataFrame
 from pandas import concat
 from pandas import read_csv
 import time
-import statistics
 from pandas import datetime
 import platform
-#import trendet
 import pandas as pd
 import pdb
 import matplotlib.pyplot as plt
 import matplotlib
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
 	matplotlib.use("macOSX")
-#from mpl_finance import candlestick_ohlc
 import matplotlib.dates as mdates
 import numpy as np
 import time
 import json
 import collections
-from pyod.models.cblof import CBLOF
-from pyod.models.feature_bagging import FeatureBagging
 from pyod.models.hbos import HBOS
-from pyod.models.iforest import IForest
-from pyod.models.knn import KNN
-from pyod.models.lof import LOF
-from pyod.models.pca import PCA
 import math
 import numpy as np
 import pandas
-import statsmodels.api as sm
-from statsmodels.tsa.seasonal import seasonal_decompose
-from scipy.stats import norm, mstats
 from datetime import datetime, timedelta
 import os
 pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
 pd.options.mode.chained_assignment = None
 
-base_path = "/home/canercak/Desktop/dev/projectlife"
+backtest_mode = 3
+datatype = "ticker3"
+
+#base_path = "/home/canercak/Desktop/dev/projectlife"
+base_path = "/home/canercak_gmail_com/projectlife"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
 	base_path = "/Users/apple/Desktop/dev/projectlife"
-path = base_path +"/data/ticker2/"
+path = base_path +"/data/"+datatype+"/"
 
-datatype ="local"
 transaction_fee = 0.00125
 initial_balance = 100
 BUY, SELL, HOLD = 0, 1, 2
 results = {}
-interval = "1m"
-config = ConfigParser()
-config.read("config.ini")
-profit_perc = 1.11
-stoploss_perc = 0.98
-dateformat_save = '%Y-%m-%d-%H-%M'
 
 conditions = [{'name': 'detect spike1', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True} ]
-
 EXCLUDE_SYMBOLS = "NCASHBTC,ONEBTC,DOGEBTC,POEBTC,MFTBTC,DREPBTC,COCOSBTC,IOTXBTC,SNGLSBTC,ERDBTC,QKCBTC,TNBBTC,CELRBTC,TUSDBTC,ANKRBTC,HOTBTC,WPRBTC,QSPBTC,SNMBTC,HSRBTC,VENBTC,MITHBTC,CNDBTC,BCCBTC,DOCKBTC,DENTBTC,FUELBTC,BTCBBTC,SALTBTC,KEYBTC,SUBBTC,TCTBTC,CDTBTC,IOSTBTC,TRIGBTC,VETBTC,TROYBTC,NPXSBTC,BTTBTC,SCBBTC,WINBTC,RPXBTC,MODBTC,WINGSBTC,BCNBTC,PHXBTC,XVGBTC,FTMBTC,PAXBTC,ICNBTC,ZILBTC,CLOAKBTC,DNTBTC,TFUELBTC,PHBBTC,CHATBTC,STORMBTC"
 
-backtest_mode = 2
+def add_features(df):
+	df = DataFrame(df)
+	df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
+	df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
+	df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
+	df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
+	df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
+	df['last_sma50'] = df.last_price.rolling(50).mean()
+	df['last_sma100'] = df.last_price.rolling(100).mean()
+	df['last_sma200'] = df.last_price.rolling(200).mean()
+	df['last_sma400'] = df.last_price.rolling(400).mean()
+	df['last_sma600'] = df.last_price.rolling(600).mean()
+	df['last_sma1000'] = df.last_price.rolling(1000).mean()
+	return df
 
 def plot_symbols():
 	dir = os.listdir(path)
@@ -72,15 +69,8 @@ def plot_symbols():
 		if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
 			SYMBOLS.append(sym.split(".csv")[0])
 	for symbol in SYMBOLS:
-		data_base = read_csv(path+symbol+".csv")
-		df = DataFrame(data_base)
-		df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
-		df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
-		df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
-		df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
-		df['last_sma100'] = df.last_price.rolling(100).mean()
-		df['last_sma200'] = df.last_price.rolling(200).mean()
-		df['last_sma600'] = df.last_price.rolling(600).mean()
+		df = read_csv(path+symbol+".csv")
+		df = add_features(df)
 		plot_whole(df)
 
 def backtest():
@@ -91,41 +81,23 @@ def backtest():
 			if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
 				SYMBOLS.append(sym.split(".csv")[0])
 		for symbol in SYMBOLS:
-			data_base = read_csv(path+symbol+".csv") #
-			df = DataFrame(data_base)
-			df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
-			df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
-			df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
-			df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
-			df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
-			df['last_sma50'] = df.last_price.rolling(50).mean()
-			df['last_sma100'] = df.last_price.rolling(100).mean()
-			df['last_sma200'] = df.last_price.rolling(200).mean()
-			df['last_sma400'] = df.last_price.rolling(400).mean()
-			df['last_sma600'] = df.last_price.rolling(600).mean()
-			df['last_sma1000'] = df.last_price.rolling(1000).mean()
+			df = read_csv(path+symbol+".csv")
+			df = add_features(df)
 			do_backtest(df,symbol)
 	elif backtest_mode == 2:
 		with open('/Users/apple/Desktop/dev/projectlife/hf/patterns/spike_patterns.json') as json_file:
 			patterns = json.load(json_file)
 			for pattern in patterns:
-				data_base = pd.read_csv("/Users/apple/Desktop/dev/projectlife/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
-				df = pd.DataFrame(data_base)
-				df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
-				df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
-				df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
-				df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
-				df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
-				df['last_sma50'] = df.last_price.rolling(50).mean()
-				df['last_sma100'] = df.last_price.rolling(100).mean()
-				df['last_sma200'] = df.last_price.rolling(200).mean()
-				df['last_sma400'] = df.last_price.rolling(400).mean()
-				df['last_sma600'] = df.last_price.rolling(600).mean()
-				df['last_sma1000'] = df.last_price.rolling(1000).mean()
-				symbol = pattern['symbol']
-				do_backtest(df,symbol,pattern)
+				df = pd.read_csv("/Users/apple/Desktop/dev/projectlife/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
+				df = add_features(df)
+				do_backtest(df,pattern['symbol'],pattern['end'])
+	elif backtest_mode == 3:
+		symbol = "POABTC"
+		df = read_csv(path+symbol+".csv")
+		df = add_features(df)
+		do_backtest(df,symbol)
 
-def do_backtest(df,symbol,pattern=None):
+def do_backtest(df,symbol,end=None):
 	trade_count = 0
 	trade_history = []
 	balance = initial_balance
@@ -138,26 +110,23 @@ def do_backtest(df,symbol,pattern=None):
 	buy_mode = True
 	entry_price = 0
 	buy_index = 0
-
 	window_size = 2000
-	df = df.reset_index()
-	df = df.fillna(0)
-
+	last_size = 15
 
 	if backtest_mode==2:
+		df = df.iloc[end - window_size-100:end+window_size]
+	elif backtest_mode==3:
 		df_x = df
-		df = df.iloc[pattern['end'] - window_size-100:pattern['end']+2000]
+		df = df.iloc[171602:172603]
+		fragment = detect_anomaly(df) #detect_anomaly(df.iloc[11706:11074])
+		fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
+		print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(2000))
+		print(fragment_sum)
+		plot_whole(df_x)
+		pdb.set_trace()
 
-	# df_x = df
-	# df = df.iloc[152169:154170]
-	# fragment = detect_anomaly(df)
-	# fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
-	# print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(2000))
-	# print(fragment_sum)
-	# plot_whole(df_x)
-	# pdb.set_trace()
-
-
+	df = df.reset_index()
+	df = df.fillna(0)
 	for i, row in df.iterrows():
 		start_time = time.time()
 		current_price = row['last_price']
@@ -172,22 +141,21 @@ def do_backtest(df,symbol,pattern=None):
 			prev1 =  fragment.iloc[-2,:]
 
 			fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
-			first_1980 = fragment[:1980]
-			last_20 = fragment[-20:]
-			last_20_nodup_score = last_20.drop_duplicates(subset="score_qav")
-			#pdb.set_trace()
+			first_n = fragment[:window_size-last_size]
+			last_n = fragment[-last_size:]
+
 			conditions[0]['buy_cond'] =(
-										(first_1980.label_qav == 0).all() and
+										(first_n.label_qav == 0).all() and
 										#kural1 - geriye 2000 bakacaksın. 1000 inanılmaz kayıp veriyor. sakın 1000'e donme.
 										len(fragment_sum) >= 2 and
-										(fragment_sum.label_qav.iloc[0] == 0 and fragment_sum.label_qav.iloc[-1] == 1  ) and
+										(fragment_sum.label_qav.iloc[0] == 0 and fragment_sum.label_qav.iloc[-1] == 1 ) and
 										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([0, 1, 0]))) == 0 and
 										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 1]))) == 0 and
 										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1]))) == 0 and
 										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1, 1]))) == 0 and
 										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 1, 1]))) == 0 and
 										#kural2 - en az 011 veya fazlası patternlar olcak. Kesinlikle 01 olamaz. Kesinlikle 01 olur obur turlu geç alıp kaybediyor. Onemlş lan arkadan nasıl geldiği
-										(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 5 and
+										(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 10 and
 										#kural3 - 1'lerin change_qav toplamıu 4'ten buyuk olcak. Onceden 5'ti onemli yerleri kacırıyor. 4 olamaz. 5ten bile fazla olması lazım
 										# trendline(last_20[last_20['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
 										# #kural4 - trendline yuksek olcak
@@ -214,7 +182,7 @@ def do_backtest(df,symbol,pattern=None):
 						printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
 						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
 						printLog(fragment_sum)
-						pdb.set_trace()
+						#pdb.set_trace()
 				elif not cond['buy_mode'] and cond['sell_cond']:
 					printLog("CONDITION " + str(ic+1) +" IS SELLING....")
 					conditions[ic]['action'] = SELL
@@ -251,7 +219,6 @@ def plot_buy_sell(trade_history):
 	plt.plot(closes_index, closes)
 	plt.scatter(buy_tick, buy_price, c='g', marker="^", s=50)
 	plt.scatter(sell_tick, sell_price , c='r', marker="v", s=50)
-	#plt.savefig(base_path+"/results/plots/"+algo +"-"+pair+"-"+interval+"-"+str(balance)+".png" )
 	plt.show(block=True)
 
 

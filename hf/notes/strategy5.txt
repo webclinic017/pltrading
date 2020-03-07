@@ -7,27 +7,31 @@ last_50 = fragment[-50:]
 last_50_nodup_score = last_50.drop_duplicates(subset="score_qav")
 
 conditions[0]['buy_cond'] =(
-							(first_950.label_qav == 0).all() and
-							#kural1 - ilk 950 tanesi 0 olcak
-							(last_50_nodup_score.label_qav.iloc[0] == 0 and last_50_nodup_score.label_qav.iloc[-1] == 1 and last_50_nodup_score.label_qav.iloc[-2] == 1) and
-							#kural2 - pattern 0la başlayıp 1le devam edecek, son iki tanesi 1 olcak
-							(
-								((fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > ((fragment_sum[fragment_sum['label_qav'] == 0].change_qav).sum() * 4)) or
-						   		((fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() + (fragment_sum[fragment_sum['label_qav'] ==0].change_qav).sum() > 15 )
-						   	) and
-						   	#kural3 - 1'lerın change_qav toplamı 0'ların toplamından 4 kat buyuk veya ikiside 3!twn buyuk
-						   	(fragment_sum[fragment_sum['label_qav'] == 0].change_qav).sum() > 0 and
-						   	(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 2 and
-						   	#kural4 - 0'ların toplamı 0'dan buyuk, 1'lerin toplamı 2'den buyuk olcak
-						   	fragment_sum.change_price.sum() > 3 and
-						   	#kural4 - 0'ların ve 1'lerin change price toplamıu 3'ten buyuk olcak
-						    trendline(last_50[last_50['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
-						    #kural5 - trendline yuksek olcak
-						    (fragment_sum.change_qav > 0).all() and (fragment_sum.change_price > 0).all()
-						    #kural6 - hem change_qav hem change_price 0dan buyuk olacak
+							(first_1980.label_qav == 0).all() and
+							#kural1 - geriye 2000 bakacaksın. 1000 inanılmaz kayıp veriyor. sakın 1000'e donme.
+							len(fragment_sum) >= 2 and
+							(fragment_sum.label_qav.iloc[0] == 0 and fragment_sum.label_qav.iloc[-1] == 1 ) and
+							len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([0, 1, 0]))) == 0 and
+							len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 1]))) == 0 and
+							len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1]))) == 0 and
+							len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1, 1]))) == 0 and
+							len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 1, 1]))) == 0 and
+							#kural2 - en az 011 veya fazlası patternlar olcak. Kesinlikle 01 olamaz. Kesinlikle 01 olur obur turlu geç alıp kaybediyor. Onemlş lan arkadan nasıl geldiği
+							(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 5 and
+							#kural3 - 1'lerin change_qav toplamıu 4'ten buyuk olcak. Onceden 5'ti onemli yerleri kacırıyor. 4 olamaz. 5ten bile fazla olması lazım
+							# trendline(last_20[last_20['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
+							# #kural4 - trendline yuksek olcak
+							(fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() > 0 and
+							(fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() < 10 and
+							#kural5 - 1'lerin change_price toplamıu 0.5'den buyuk 10'dan kucuk olcak. 1 dedin geç aldı 0.5 dedin geç aldı en iyisi 0. onemli olan change_qav
+							fragment_sum[fragment_sum['label_qav'] == 1].change_qav.max() > fragment_sum[fragment_sum['label_qav'] == 0].change_qav.max()
+							#kural6 - onemli. ticker2storj188785 ticker3sys125169 gibi durumlardan korunmak için.
+							#(not fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_decreasing)
+							#kural7 - change_qav azalıyor olmicak. Bu kuralı kapatıyorum. sortun yaratıyor. ticker3dnt14569 gibi durumlar oluyor.
 						   )
 
 conditions[0]['sell_cond'] =(last['last_sma100'] < prev1['last_sma100'])
+#spike için en uygunu 100luk test ettim onayladım. Hep daha fazal kazanıyor hem aha az kaybediyor.
 ######################################################################################################################################################
 NAPIYOR?
 ######################################################################################################################################################
