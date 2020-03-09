@@ -1,0 +1,60 @@
+[
+
+    {"symbol": "STXBTC","data": "ticker3", "end": 13706, "type":"spike_true","win":3},
+    {"symbol": "DUSKBTC","data": "ticker3", "end": 54780, "type":"spike_true","win":3, "notes":"1101 daha iyi alcak"},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 122244, "type":"spike_true","win":1,"notes":"ucundan kurtarıyor"},
+    {"symbol": "SYSBTC","data": "ticker3", "end": 11065, "type":"spike_true","win":3},
+    {"symbol": "AMBBTC","data": "ticker3", "end": 124348, "type":"spike_true","win":2,"notes":"1001 daha iyi alır"},
+    {"symbol": "GRSBTC","data": "ticker3", "end": 155100, "type":"spike_true","win":1,"notes":"çok az kazanıyor"},
+    {"symbol": "ARDRBTC","data": "ticker3", "end": 141932, "type":"spike_true","win":0,"notes":"dogru kalkmış 2000 geç alıyor"},
+
+    {"symbol": "ARDRBTC","data":"ticker3","end": 123201,"type":"spike_false","loss":1},
+    {"symbol": "ARDRBTC","data":"ticker3","end": 46369,"type":"spike_false","loss":1},
+    {"symbol": "POABTC","data":"ticker3","end": 169894,"type":"spike_false","loss":1},
+    {"symbol": "DCRBTC","data":"ticker3","end": 142619,"type":"spike_false","loss":1},
+    {"symbol": "RCNBTC","data":"ticker3","end": 237544,"type":"spike_false","loss":1},
+    {"symbol": "CVCBTC","data": "ticker3", "end": 35275, "type":"spike_false","loss":2},
+    {"symbol": "AMBBTC","data": "ticker3", "end": 62630, "type":"spike_false","loss":0},
+    {"symbol": "AEBTC","data": "ticker3", "end": 293082, "type":"spike_false","loss":0},
+    {"symbol": "POABTC","data": "ticker3", "end": 172602, "type":"spike_false","loss":0},
+    {"symbol": "GRSBTC","data": "ticker3", "end": 123293, "type":"spike_false","loss":0},
+    {"symbol": "IOTABTC","data": "ticker3", "end": 445479, "type":"spike_false","loss":0},
+    {"symbol": "EVXBTC","data": "ticker3", "end": 271573, "type":"spike_false","loss":0},
+    {"symbol": "LRCBTC","data": "ticker3", "end": 309898, "type":"spike_false","loss":0},
+    {"symbol": "RLCBTC","data": "ticker3", "end": 114832, "type":"spike_false","loss":0},
+    {"symbol": "XZCBTC","data": "ticker3", "end": 84645, "type":"spike_true","loss":0},
+    {"symbol": "BTSBTC","data": "ticker3", "end": 266918, "type":"spike_false","loss":000},
+    {"symbol": "BTSBTC","data": "ticker3", "end": 246674, "type":"spike_false","loss":000},
+    {"symbol": "BTSBTC","data": "ticker3", "end": 202030, "type":"spike_false","loss":000},
+    {"symbol": "BTSBTC","data": "ticker3", "end": 144671, "type":"spike_false","loss":000},
+   {"symbol": "GXSBTC","data": "ticker3", "end": 313264, "type":"spike_false","loss":0},
+{"symbol": "GXSBTC","data": "ticker3", "end": 177671, "type":"spike_false","loss":0},
+
+{"symbol": "VIABTC","data": "ticker3", "end": 165743, "type":"spike_false","loss":0},
+
+{"symbol": "ADXBTC","data": "ticker3", "end": 173822, "type":"spike_false","loss":0},
+
+{"symbol": "ADXBTC","data": "ticker3", "end": 157313, "type":"spike_false","loss":0},
+
+{"symbol": "ADXBTC","data": "ticker3", "end": 153091, "type":"spike_false","loss":0},
+
+{"symbol": "ADXBTC","data": "ticker3", "end": 121404, "type":"spike_false","loss":0},
+
+
+{"symbol": "NXSBTC","data": "ticker3", "end": 226002, "type":"spike_false","loss":0},
+
+{"symbol": "NXSBTC","data": "ticker3", "end": 144820, "type":"spike_false","loss":0},
+
+
+
+
+
+
+
+
+
+
+
+
+
+]

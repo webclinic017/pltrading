@@ -33,10 +33,10 @@ pd.options.mode.chained_assignment = None
 backtest_mode = 3
 datatype = "ticker3"
 
-#base_path = "/home/canercak/Desktop/dev/projectlife"
-base_path = "/home/canercak_gmail_com/projectlife"
+#base_path = "/home/canercak/Desktop/dev/pltrading"
+base_path = "/home/canercak_gmail_com/pltrading"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-	base_path = "/Users/apple/Desktop/dev/projectlife"
+	base_path = "/Users/apple/Desktop/dev/pltrading"
 path = base_path +"/data/"+datatype+"/"
 
 transaction_fee = 0.00125
@@ -45,7 +45,7 @@ BUY, SELL, HOLD = 0, 1, 2
 results = {}
 
 conditions = [{'name': 'detect spike1', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True} ]
-EXCLUDE_SYMBOLS = "NCASHBTC,ONEBTC,DOGEBTC,POEBTC,MFTBTC,DREPBTC,COCOSBTC,IOTXBTC,SNGLSBTC,ERDBTC,QKCBTC,TNBBTC,CELRBTC,TUSDBTC,ANKRBTC,HOTBTC,WPRBTC,QSPBTC,SNMBTC,HSRBTC,VENBTC,MITHBTC,CNDBTC,BCCBTC,DOCKBTC,DENTBTC,FUELBTC,BTCBBTC,SALTBTC,KEYBTC,SUBBTC,TCTBTC,CDTBTC,IOSTBTC,TRIGBTC,VETBTC,TROYBTC,NPXSBTC,BTTBTC,SCBBTC,WINBTC,RPXBTC,MODBTC,WINGSBTC,BCNBTC,PHXBTC,XVGBTC,FTMBTC,PAXBTC,ICNBTC,ZILBTC,CLOAKBTC,DNTBTC,TFUELBTC,PHBBTC,CHATBTC,STORMBTC"
+EXCLUDE_SYMBOLS = "SCBTC, NCASHBTC,ONEBTC,DOGEBTC,POEBTC,MFTBTC,DREPBTC,COCOSBTC,IOTXBTC,SNGLSBTC,ERDBTC,QKCBTC,TNBBTC,CELRBTC,TUSDBTC,ANKRBTC,HOTBTC,WPRBTC,QSPBTC,SNMBTC,HSRBTC,VENBTC,MITHBTC,CNDBTC,BCCBTC,DOCKBTC,DENTBTC,FUELBTC,BTCBBTC,SALTBTC,KEYBTC,SUBBTC,TCTBTC,CDTBTC,IOSTBTC,TRIGBTC,VETBTC,TROYBTC,NPXSBTC,BTTBTC,SCBBTC,WINBTC,RPXBTC,MODBTC,WINGSBTC,BCNBTC,PHXBTC,XVGBTC,FTMBTC,PAXBTC,ICNBTC,ZILBTC,CLOAKBTC,DNTBTC,TFUELBTC,PHBBTC,CHATBTC,STORMBTC"
 
 def add_features(df):
 	df = DataFrame(df)
@@ -80,19 +80,20 @@ def backtest():
 		for sym in dir:
 			if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
 				SYMBOLS.append(sym.split(".csv")[0])
-		for symbol in SYMBOLS:
+		for isx, symbol in enumerate(SYMBOLS):
+			print(str(isx)+" of "+ str(len(SYMBOLS))+ " symbols")
 			df = read_csv(path+symbol+".csv")
 			df = add_features(df)
 			do_backtest(df,symbol)
 	elif backtest_mode == 2:
-		with open('/Users/apple/Desktop/dev/projectlife/hf/patterns/spike_patterns.json') as json_file:
+		with open('/Users/apple/Desktop/dev/pltrading/hf/patterns/strategy6_'+datatype+'.json') as json_file:
 			patterns = json.load(json_file)
 			for pattern in patterns:
-				df = pd.read_csv("/Users/apple/Desktop/dev/projectlife/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
+				df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
 				df = add_features(df)
 				do_backtest(df,pattern['symbol'],pattern['end'])
 	elif backtest_mode == 3:
-		symbol = "POABTC"
+		symbol = "NXSBTC"
 		df = read_csv(path+symbol+".csv")
 		df = add_features(df)
 		do_backtest(df,symbol)
@@ -110,20 +111,20 @@ def do_backtest(df,symbol,end=None):
 	buy_mode = True
 	entry_price = 0
 	buy_index = 0
-	window_size = 2000
+	window_size = 1000
 	last_size = 15
 
 	if backtest_mode==2:
 		df = df.iloc[end - window_size-100:end+window_size]
 	elif backtest_mode==3:
 		df_x = df
-		df = df.iloc[171602:172603]
+		#df = df.iloc[122347:124347]
 		fragment = detect_anomaly(df) #detect_anomaly(df.iloc[11706:11074])
 		fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
 		print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(2000))
 		print(fragment_sum)
 		plot_whole(df_x)
-		pdb.set_trace()
+		#pdb.set_trace()
 
 	df = df.reset_index()
 	df = df.fillna(0)

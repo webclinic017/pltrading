@@ -27,21 +27,22 @@ import numpy as np
 import pandas
 from datetime import datetime, timedelta
 import os
+
 pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 3000)
 pd.options.mode.chained_assignment = None
 
-base_path = "/home/canercak/Desktop/dev/projectlife"
+base_path = "/home/canercak/Desktop/dev/pltrading"
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
-	base_path = "/Users/apple/Desktop/dev/projectlife"
+	base_path = "/Users/apple/Desktop/dev/pltrading"
 path = base_path +"/data/ticker3/"
 
 def backtest():
-	SYMBOLS =[]
-	dir = os.listdir(path)
-	for s in dir:
-		if ".py" not in s and ".DS_Store" not in s:
-	 		SYMBOLS.append(s.split(".csv")[0])
+	SYMBOLS =["KNCBTC"]
+	# dir = os.listdir(path)
+	# for s in dir:
+	# 	if ".py" not in s and ".DS_Store" not in s:
+	#  		SYMBOLS.append(s.split(".csv")[0])
 
 	for symbol in SYMBOLS:
 		data_base = read_csv(path+symbol+".csv")
@@ -50,11 +51,9 @@ def backtest():
 		df['last_sma100'] = df.last_price.rolling(100).mean()
 		df['last_sma200'] = df.last_price.rolling(200).mean()
 		df['last_sma600'] = df.last_price.rolling(600).mean()
-
 		df = df.reset_index()
 		df = df.fillna(0)
 		window_size = 2000
-		#np1 = np.zeros((window_size,18))
 		arr = []
 		for i, row in df.iterrows():
 			if i > window_size:
@@ -62,14 +61,12 @@ def backtest():
 				fragment1 = detect_anomaly(fragment1)
 				fragment1 = fragment1.reset_index()
 				arr.append(fragment1)
-				#np_temp = fragment1.to_numpy()
-				#np1 =  np.dstack((np1,np_temp))
 				if i % 1000 == 0:
 					print(symbol+"-"+str(row['index']))
-					pdb.set_trace()
-					#np.savez_compressed(symbol,np1)
-
-
+		with open("file.txt", "w") as output_file:
+		    for line in arr:
+		       output_file.write("".join([str(i) for i in line]))
+		       output_file.write("\n")
 
 def detect_anomaly(df):
 	df = df.fillna(0)
