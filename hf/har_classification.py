@@ -1,259 +1,365 @@
-from keras.utils import to_categorical
-from keras.layers import Dense,Dropout,Conv1D,BatchNormalization,MaxPool1D,Flatten
-from keras.models import Sequential
-from keras.callbacks import History
-from keras.layers import LSTM,RNN
-import pandas as pd
-import numpy as np
-import keras
-from os import listdir
-from sklearn.model_selection import train_test_split
+from math import sqrt
+from dateutil import parser
+from configparser import ConfigParser
+from pandas import Series
+import matplotlib.dates as mdates
+from pandas import DataFrame
+from pandas import concat
+from pandas import read_csv
+import time
+from pandas import datetime
 import platform
+import pandas as pd
 import pdb
 import matplotlib.pyplot as plt
 import matplotlib
 if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
     matplotlib.use("macOSX")
+import matplotlib.dates as mdates
+import numpy as np
+import time
 import json
+import collections
+from pyod.models.hbos import HBOS
+import math
+import numpy as np
+import pandas
+from datetime import datetime, timedelta
+import os
+import numpy as np
+import pymannkendall as mk
+
+pd.set_option("display.precision", 9)
+pd.set_option('display.max_rows', 3000)
+pd.options.mode.chained_assignment = None
+
+backtest_mode = 3
+datatype = "ticker3"
+
+#base_path = "/home/canercak/Desktop/dev/pltrading"
+base_path = "/home/canercak_gmail_com/pltrading"
+if platform.platform() == "Darwin-18.7.0-x86_64-i386-64bit":
+    base_path = "/Users/apple/Desktop/dev/pltrading"
+path = base_path +"/data/"+datatype+"/"
+
+transaction_fee = 0.00125
+initial_balance = 100
+BUY, SELL, HOLD = 0, 1, 2
+results = {}
+
+conditions = [{'name': 'detect spike1', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True} ]
+EXCLUDE_SYMBOLS = ["MTHBTC","SCBTC","NCASHBTC","ONEBTC","DOGEBTC","POEBTC","MFTBTC","DREPBTC","COCOSBTC","IOTXBTC","SNGLSBTC","ERDBTC","QKCBTC","TNBBTC","CELRBTC","TUSDBTC","ANKRBTC","HOTBTC","WPRBTC","QSPBTC","SNMBTC","HSRBTC","VENBTC","MITHBTC","CNDBTC","BCCBTC","DOCKBTC","DENTBTC","FUELBTC","BTCBBTC","SALTBTC","KEYBTC","SUBBTC","TCTBTC","CDTBTC","IOSTBTC","TRIGBTC","VETBTC","TROYBTC","NPXSBTC","BTTBTC","SCBBTC","WINBTC","RPXBTC","MODBTC","WINGSBTC","BCNBTC","PHXBTC","XVGBTC","FTMBTC","PAXBTC","ICNBTC","ZILBTC","CLOAKBTC","DNTBTC","TFUELBTC","PHBBTC","CHATBTC","STORMBTC"]
+
+def add_features(df):
+    df = DataFrame(df)
+    df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
+    df['qav_sma50'] = df.total_traded_quote_asset_volume.rolling(50).mean()
+    df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
+    df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
+    df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
+    df['last_sma50'] = df.last_price.rolling(50).mean()
+    df['last_sma100'] = df.last_price.rolling(100).mean()
+    df['last_sma200'] = df.last_price.rolling(200).mean()
+    df['last_sma400'] = df.last_price.rolling(400).mean()
+    df['last_sma600'] = df.last_price.rolling(600).mean()
+    df['last_sma1000'] = df.last_price.rolling(1000).mean()
+    return df
+
+def plot_symbols():
+    dir = os.listdir(path)
+    SYMBOLS = ["ARKBTC",  "ONGBTC",  "KNCBTC",  "GTOBTC", "NEBLBTC",  "MCOBTC",  "VIABTC", "POLYBTC", "ICXBTC",  "NXSBTC",  "RDNBTC",  "SYSBTC",  "GRSBTC", "AMBBTC" "DUSKBT"]
+    for sym in dir:
+        if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
+            SYMBOLS.append(sym.split(".csv")[0])
+    for symbol in SYMBOLS:
+        df = read_csv(path+symbol+".csv")
+        df = add_features(df)
+        plot_whole(df)
+
+def backtest():
+    if backtest_mode == 1:
+        SYMBOLS = []
+        dir = os.listdir(path)
+        for sym in dir:
+            if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
+                SYMBOLS.append(sym.split(".csv")[0])
+        for isx, symbol in enumerate(SYMBOLS):
+            print(str(isx)+" of "+ str(len(SYMBOLS))+ " symbols")
+            df = read_csv(path+symbol+".csv")
+            df = add_features(df)
+            do_backtest(df,symbol)
+    elif backtest_mode == 2:
+        with open('/Users/apple/Desktop/dev/pltrading/hf/patterns/must_patterns.json') as json_file:
+            patterns = json.load(json_file)
+            for pattern in patterns:
+                #if pattern['certainty']== 1:
+                df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
+                df = add_features(df)
+                do_backtest(df,pattern['symbol'],pattern['end'])
+    elif backtest_mode == 3:
+        SYMBOLS = [  "VIABTC", "POLYBTC", "ICXBTC",  "NXSBTC",  "RDNBTC",  "SYSBTC",  "GRSBTC", "AMBBTC" "DUSKBT"]
+        #SYMBOLS = ["POLYBTC"]
+        for symbol in SYMBOLS:
+            df = read_csv(path+symbol+".csv")
+            df = add_features(df)
+            do_backtest(df,symbol)
+
+def do_backtest(df,symbol,end=None):
+    trade_count = 0
+    trade_history = []
+    balance = initial_balance
+    win_count = 0
+    loss_count = 0
+    profit = 0
+    action = HOLD
+    current_tick = 0
+    entry_tick = 0
+    buy_mode = True
+    entry_price = 0
+    buy_index = 0
+    window_size = 1000
+    last_size = 100
+
+    if backtest_mode==2:
+        df = df.iloc[end - window_size-100:end+window_size+window_size]
+    elif backtest_mode==3:
+        df_x = df
+        #df = df.iloc[43900:46000]
+        # fragment = detect_anomaly(df) #detect_anomaly(df.iloc[11706:11074])
+        # fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
+        # print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(2000))
+        # print(fragment_sum)
+        #plot_whole(df_x)
+        # pdb.set_trace()
+
+    df = df.reset_index()
+    df = df.fillna(0)
+    for i, row in df.iterrows():
+        start_time = time.time()
+        current_price = row['last_price']
+        current_ask_price = row['best_ask_price']
+        current_bid_price = row['best_bid_price']
+        current_tick += 1
+        if i > window_size:
+            last =  df.iloc[i,:]
+            prev1 =  df.iloc[i-2,:]
+            prev25 =  df.iloc[i-25,:]
+            prev50 =  df.iloc[i-50,:]
+            prev100 =  df.iloc[i-100,:]
+            prev200 =  df.iloc[i-200,:]
+            diff25 = prev25.qav_sma50 - prev25.qav_sma200
+            diff50 = prev50.qav_sma50 - prev50.qav_sma200
+            diff100 = prev100.qav_sma50 - prev100.qav_sma200
+            diff200 = prev200.qav_sma50 - prev200.qav_sma200
+
+            first_check = (
+                            True
+                            #diff25 > 0 and
+                            #diff50 > 0 and
+                            #diff100 > 0 and
+                            #(diff25 >diff50 > diff100)
+                           )
+            if (first_check  == True and conditions[0]['buy_mode'] == True):
+                #print("first_check index: "+ str(last['index']))
+                fragment = df.iloc[i-window_size:i,:]
+                fragment = detect_anomaly(fragment)
+                fragment = fragment.reset_index()
+                last =  fragment.iloc[-1,:]
+                prev1 =  fragment.iloc[-2,:]
+                fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
+                first_n = fragment[:window_size-last_size]
+                last_n = fragment[-last_size:]
+                change_list = fragment[fragment['label_qav'] == 1].change_qav
+                # if last['index'] == 569446:
+                #     pdb.set_trace()
+
+                conditions[0]['buy_cond'] =(
+                                            ((change_list > 0).sum() > (change_list.count() / 3*2)) and
+                                            (change_list >= 0).all() and
+                                            (first_n.label_qav == 0).all() and
+                                            len(fragment_sum) >= 2 and
+                                            (fragment_sum.label_qav.iloc[0] == 0) and
+                                            (fragment_sum.label_qav.iloc[-1] == 1 and fragment_sum.label_qav.iloc[-2] == 1) and
+                                            len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([0, 1, 0]))) == 0 and
+                                            len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 1]))) == 0 and
+                                            len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1]))) == 0 and
+                                            len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1, 1]))) == 0 and
+                                            len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 1, 1]))) == 0 and
+                                            (fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 5 and
+                                            (fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() < 15 and
+                                            (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() > 0 and
+                                            (fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() < 10 and
+                                            fragment_sum[fragment_sum['label_qav'] == 1].change_qav.max() > fragment_sum[fragment_sum['label_qav'] == 0].change_qav.max()
+                                           )
+            elif (conditions[0]['buy_mode'] == False):
+                    conditions[0]['sell_cond'] = (last['last_sma100'] < prev1['last_sma100'])
+            else:
+                continue
+
+            for ic, cond in enumerate(conditions):
+                if cond['buy_mode'] and cond['buy_cond']:
+                    conditions[ic]['action'] = BUY
+                    conditions[ic]['entry_price']  =  current_ask_price
+                    conditions[ic]['buy_mode'] = False
+                    if ic ==0:
+                        printLog("CONDITION " + str(ic+1) +" IS BUYING....")
+                        printLog("##### TRADE " +  str(cond['trade_count']) + " #####")
+                        printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+                        printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+                        printLog(fragment_sum)
+                        printLog(mk.original_test(fragment.change_qav.to_numpy()))
+                        #pdb.set_trace()
+                elif not cond['buy_mode'] and cond['sell_cond']:
+                    printLog("CONDITION " + str(ic+1) +" IS SELLING....")
+                    conditions[ic]['action'] = SELL
+                    exit_price =  current_bid_price
+                    profit = ((exit_price - cond['entry_price'])/cond['entry_price'] + 1)*(1-transaction_fee)**2 - 1
+                    conditions[ic]['balance'] = conditions[ic]['balance'] * (1.0 + profit)
+                    conditions[ic]['trade_count'] += 1
+                    conditions[ic]['buy_mode'] = True
+                    printLog("SELL: " + symbol+" for "+ str(exit_price) + " at " +  str(last.date) + " - index: " +  str(last['index']))
+                    printLog("PROFIT: " + str(profit*100))
+                    printLog("BALANCE: " + str(cond['balance']))
+                else:
+                    conditions[ic]['action'] = HOLD
+
+        if (current_tick > len(df)-1):
+            printLog("*********TOTAL RESULTS*************************")
+            for ic, cond in enumerate(conditions):
+                printLog("SYMBOL: "+ symbol)
+                printLog("CONDITION NUMBER: "+ str(ic))
+                printLog("TOTAL BALANCE: "+ str(cond['balance']))
+                printLog("TRADE COUNT: "+ str(cond['trade_count']))
+            printLog("**********************************")
+
+        if i % 1000 == 0:
+            printLog(symbol+"-"+str(row['index']))
+
+def plot_buy_sell(trade_history):
+    closes = [data[2] for data in trade_history]
+    closes_index = [data[1] for data in trade_history]
+    buy_tick = np.array([data[1] for data in trade_history if data[0] == 0])
+    buy_price = np.array([data[2] for data in trade_history if data[0] == 0])
+    sell_tick = np.array([data[1] for data in trade_history if data[0] == 1])
+    sell_price = np.array([data[2] for data in trade_history if data[0] == 1])
+    plt.plot(closes_index, closes)
+    plt.scatter(buy_tick, buy_price, c='g', marker="^", s=50)
+    plt.scatter(sell_tick, sell_price , c='r', marker="v", s=50)
+    plt.show(block=True)
 
 
+def detect_trend(df):
+    decomposition = seasonal_decompose(df.total_traded_quote_asset_volume, model='multiplicative', extrapolate_trend='freq',  period=100)
+    matplotlib.rcParams['figure.figsize'] = [9.0,5.0]
+    fig = decomposition.plot()
+    trace1 = go.Scatter(
+        x = df.date,y = decomposition.trend,
+        name = 'Trend'
+    )
+    trace2 = go.Scatter(
+        x = df.date,y = decomposition.seasonal,
+        name = 'Seasonal'
+    )
+    trace3 = go.Scatter(
+        x = df.date,y = decomposition.resid,
+        name = 'Residual'
+    )
+    trace4 = go.Scatter(
+        x = df.date,y = df.total_traded_quote_asset_volume,
+        name = 'Mean Stock Value'
+    )
+    plt.show()
+
+def trendline(data, order=1):
+    coeffs = np.polyfit(data.index.values, list(data), order)
+    slope = coeffs[-2]
+    return float(slope)
+
+def plot_whole(df):
+    plt.clf()
+    fig, axes = plt.subplots(nrows=2, ncols=1)
+    df.total_traded_quote_asset_volume.plot(ax=axes[0] , color="blue", style='.-')
+
+    df.qav_sma50.plot(ax=axes[0], color="red")
+    df.qav_sma100.plot(ax=axes[0], color="orange")
+    df.qav_sma200.plot(ax=axes[0], color="brown")
+
+    df.last_price.plot(ax=axes[1], style='.-')
+    df.last_sma100.plot(ax=axes[1], color="yellow")
+    df.last_sma200.plot(ax=axes[1], color="purple")
+    df.last_sma600.plot(ax=axes[1], color="black")
+    df.last_sma1000.plot(ax=axes[1], color="green")
+    plt.title(df.iloc[-1].symbol)
+    plt.show()
+
+def plot_trades(df):
+    pdb.set_trace()
+    df.plot(x='close', y='mark',style='.-',linestyle='-', marker='o', markerfacecolor='black')
+    trade_history.plot(x='action', y='current_price',linestyle='-', marker='o', markerfacecolor='black', plot_data_points= True)
+
+def detect_anomaly(df):
+    df = df.fillna(0)
+    clf =HBOS()
+    x_values = df.index.values.reshape(df.index.values.shape[0],1)
+    y_values = df.total_traded_quote_asset_volume.values.reshape(df.total_traded_quote_asset_volume.values.shape[0],1)
+    clf.fit(y_values)
+    clf.predict(y_values)
+    df["label_qav"] = clf.predict(y_values)
+    df["score_qav"] = clf.decision_function(y_values)#.round(6)
+    df['change_qav'] = df.total_traded_quote_asset_volume.pct_change(periods=1)*100
+    df['change_price'] = df.last_price.pct_change(periods=1)*100
+    return df
+
+def plot_four_subplots():
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+    df.total_traded_quote_asset_volume.plot(ax=axes[0,0])
+    df.total_traded_base_asset_volume.plot(ax=axes[0,1])
+    df.last_price.plot(ax=axes[1,0])
+    df.price_change_percent.plot(ax=axes[1,1])
+
+def search_sequence_numpy(arr,seq):
+    # Store sizes of input array and sequence
+    Na, Nseq = arr.size, seq.size
+
+    # Range of sequence
+    r_seq = np.arange(Nseq)
+
+    # Create a 2D array of sliding indices across the entire length of input array.
+    # Match up with the input sequence & get the matching starting indices.
+    M = (arr[np.arange(Na-Nseq+1)[:,None] + r_seq] == seq).all(1)
+
+    # Get the range of those indices as final output
+    if M.any() >0:
+        return np.where(np.convolve(M,np.ones((Nseq),dtype=int))>0)[0]
+    else:
+        return []         # No match found
 
 
-def normalize(_d, to_sum=True, copy=True):
-    # d is a (n x dimension) np array
-    d = _d if not copy else np.copy(_d)
-    d -= np.min(d, axis=0)
-    d /= (np.sum(d, axis=0) if to_sum else np.ptp(d, axis=0))
-    return d
+def pct_change(first, second):
+    diff = second - first
+    change = 0
+    try:
+        if diff > 0:
+            change = (diff / first) * 100
+        elif diff < 0:
+            diff = first - second
+            change = -((diff / first) * 100)
+    except ZeroDivisionError:
+        return float('inf')
+    return change
 
-# Loading train and test data
-time_steps=1000
-channels=2
-batch=10
-window_size = 1000
+def print_df(df):
+    with pd.option_context('display.max_rows', None):
+        print(df)
 
-X,Y,PredictX  = [],[],[]
-with open('/Users/apple/Desktop/dev/projectlife/hf/patterns/spike_patterns.json') as json_file:
-    patterns = json.load(json_file)
-    for pattern in patterns:
-        data_base = pd.read_csv("/Users/apple/Desktop/dev/projectlife/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
-        df = pd.DataFrame(data_base)
-        df.columns = ['symbol','date','price_change','price_change_percent','last_price','best_bid_price','best_ask_price','total_traded_base_asset_volume','total_traded_quote_asset_volume']
-        fragment = df.iloc[pattern["end"]-window_size+1:pattern["end"]+1,:]
-        if pattern['type'] == "spike_true":
-            X.append([fragment.total_traded_quote_asset_volume.values.tolist(),fragment.last_price.values.tolist()])
-            Y.append(1)
-        elif pattern['type'] == "spike_false":
-            X.append([fragment.total_traded_quote_asset_volume.values.tolist(),fragment.last_price.values.tolist()])
-            Y.append(0)
-        else:
-            PredictX.append([fragment.total_traded_quote_asset_volume.values.tolist(),fragment.last_price.values.tolist()])
-
-    fragment_none = df.iloc[1001:1500,:]
-    for i, row in  fragment_none.iterrows():
-        middle_slide = df.iloc[i-1000:i,:]
-        X.append([middle_slide.total_traded_quote_asset_volume.values.tolist(),middle_slide.last_price.values.tolist()])
-        Y.append(0)
+def printLog(*args, **kwargs):
+    print(*args, **kwargs)
+    with open(base_path+'/logs/testmode_'+str(backtest_mode)+".txt",'a') as file:
+        print(*args, **kwargs, file=file)
 
 
-X = np.array(X)
-X = X.reshape(X.shape[0], X.shape[2], X.shape[1])
-Y = np.array(Y)
-train_data, test_data, y_train, y_test = train_test_split(X, Y, test_size=0.33)
+if __name__ == '__main__':
+    #plot_symbols()
+    backtest()
 
-PredictX = np.array(PredictX)
-PredictX = PredictX.reshape(PredictX.shape[0], PredictX.shape[2], PredictX.shape[1])
-
-# path="/Users/apple/Desktop/dev/HAR/"
-# features=[x for x in listdir(path+"train/Inertial Signals") if '~' not in x]
-# features.sort()
-# features1=[x for x in listdir(path+"test/Inertial Signals") if '~' not in x]
-# features1.sort()
-
-# y_train=np.loadtxt(path+"train/y_train.txt")-1
-# y_test=np.loadtxt(path+"test/y_test.txt")-1
-
-# train_data=np.zeros((y_trainx.shape[0],128,9))
-# test_data=np.zeros((y_testx.shape[0],128,9))
-
-# for i in range(len(features)):
-#     tr_data=np.loadtxt(path+'/train/Inertial Signals/'+features[i])
-#     te_data=np.loadtxt(path+'/test/Inertial Signals/'+features1[i])
-
-#     train_data[:,:,i]=tr_data
-#     test_data[:,:,i]=te_data
-
-# print(train_data.shape)
-# print(test_data.shape)
-
-
-# #### Normalizing the data
-train_data=(train_data-np.mean(train_data,axis=0)[None,:,:])/np.std(train_data,axis=0)[None,:,:]
-test_data=(test_data-np.mean(test_data,axis=0)[None,:,:])/np.std(test_data,axis=0)[None,:,:]
-print(train_data.shape)
-print(test_data.shape)
-print(y_train.shape)
-print(y_test.shape)
-
-# Train-Val split
-x_train,x_val,y_train,y_val=train_test_split(train_data,y_train,stratify=y_train,random_state=123)
-print(y_train.shape)
-print(y_train[0])
-
-# #### One-hot encoding of data
-y_train=to_categorical(y_train)
-y_val=to_categorical(y_val)
-y_test=to_categorical(y_test)
-print(y_train.shape)
-
-# #### Convolutional Neural Network
-history=History()
-model=Sequential()
-model.add(Conv1D(filters=18,kernel_size=2,strides=1,padding='same',activation='relu',input_shape=(time_steps,channels)))
-model.add(MaxPool1D(pool_size=2,strides=2,padding='same'))
-model.add(Conv1D(filters=36,kernel_size=2,strides=1,padding='same',activation='relu'))
-model.add(MaxPool1D(pool_size=2,strides=2,padding='same'))
-model.add(Conv1D(filters=72,kernel_size=2,strides=1,padding='same',activation='relu'))
-model.add(MaxPool1D(pool_size=2,strides=2,padding='same'))
-model.add(Conv1D(filters=144,kernel_size=2,strides=1,padding='same',activation='relu'))
-model.add(MaxPool1D(pool_size=2,strides=2,padding='same'))
-model.add(Flatten())
-model.add(Dropout(0.5))
-model.add(Dense(2,activation='softmax'))
-print(model.summary())
-adam=keras.optimizers.Adam(lr=0.0001)
-model.compile(loss='categorical_crossentropy',metrics=['accuracy'],optimizer=adam)
-history=model.fit(x_train,y_train,batch_size=batch,epochs=100,verbose=2,validation_data=(x_val,y_val),shuffle=True)
-
-# This module tests the above creatd CNN model.
-[loss,acc]=model.evaluate(test_data,y_test)
-print(loss,acc)
-
-pdb.set_trace()
-#PredictX = (PredictX-np.mean(PredictX,axis=0)[None,:,:])/np.std(PredictX,axis=0)[None,:,:]
-
-yPredicted = model.predict_proba(PredictX)
-predicted = yPredicted.argmax(axis=1)
-print(predicted)
-
-
-probs = model.predict(test_data)
-predicted_test = probs.argmax(axis=1)
-print(predicted_test)
-
-
-
-# Plotting the training accuracy and loss
-
-# plt.plot(history.history['accuracy'],'r-',history.history['val_accuracy'],'b-')
-# plt.xlabel('Iterations')
-# plt.ylabel('Accuracy')
-# plt.legend(['train','validation'],loc='bottom right')
-# plt.show()
-
-# plt.plot(history.history['loss'],'r-',history.history['val_loss'],'b-')
-# plt.xlabel('Iterations')
-# plt.ylabel('Loss')
-# plt.legend(['train','validation'],loc='bottom right')
-# plt.show()
-
-
-# #### Recurrent Neural Network
-# history=History()
-# model=Sequential()
-# model.add(LSTM(units=128,activation='sigmoid',input_shape=(time_steps,channels),dropout=0.3))
-# model.add(Dense(6,activation='softmax'))
-# print(model.summary())
-# rmsprop=keras.optimizers.RMSprop(lr=0.0001)
-# adam=keras.optimizers.Adam(lr=0.0001)
-# model.compile(optimizer=rmsprop,loss='categorical_crossentropy',metrics=['accuracy'])
-# history=model.fit(x_train,y_train,epochs=100,batch_size=batch,validation_data=(x_val,y_val),verbose=2)
-
-# # Plotting the training accuracy and loss
-# plt.plot(history.history['accuracy'],'r-',history.history['val_accuracy'],'b-')
-# plt.xlabel('Iterations')
-# plt.ylabel('Accuracy')
-# plt.legend(['train','validation'],loc='bottom right')
-# plt.show()
-
-# plt.plot(history.history['loss'],'r-',history.history['val_loss'],'b-')
-# plt.xlabel('Iterations')
-# plt.ylabel('Loss')
-# plt.legend(['train','validation'],loc='bottom right')
-# plt.show()
-
-# [loss,acc]=model.evaluate(test_data,y_test)
-# print(loss,acc)
-
-# # This module tests the above created RNN model.
-
-# # Reading and storing data
-# path="/Users/apple/Desktop/dev/HAR/"
-# features=[x for x in listdir(path+"train/Inertial Signals") if '~' not in x]
-# features1=[x for x in listdir(path+"test/Inertial Signals") if '~' not in x]
-# cols=features+["Category"]
-
-# y_train=np.loadtxt(path+"train/y_train.txt").reshape((7352,1))-1
-# y_test=np.loadtxt(path+"test/y_test.txt").reshape((2947,1))-1
-
-# x_train=[]
-# x_test=[]
-
-# for i in range(len(features)):
-#     print(i)
-#     vals=np.loadtxt(path+'train/Inertial Signals/'+features[i])
-#     vals1=np.loadtxt(path+'test/Inertial Signals/'+features1[i])
-#     if i==0:
-#         x_train=vals
-#         x_test=vals1
-
-#     else:
-#         x_train=np.hstack((x_train,vals))
-#         x_test=np.hstack((x_test,vals1))
-
-# # Normalize data
-# x_train=(x_train-np.mean(x_train,axis=0))/np.std(x_train,axis=0)
-# x_test=(x_test-np.mean(x_test,axis=0))/np.std(x_test,axis=0)
-
-# # Stratified train test split
-# x_train,x_val,y_train,y_val=train_test_split(x_train,y_train,stratify=y_train,random_state=123)
-
-# x_train=x_train.reshape((x_train.shape[0],9,x_train.shape[1]/9))
-# x_val=x_val.reshape((x_val.shape[0],9,x_val.shape[1]/9))
-# x_test=x_test.reshape((x_test.shape[0],9,x_test.shape[1]/9))
-
-# np.save('X_train',x_train,allow_pickle=False)
-# np.save('X_val',x_val,allow_pickle=False)
-# np.save('X_test',x_test,allow_pickle=False)
-# np.save('Y_train',y_train,allow_pickle=False)
-# np.save('Y_val',y_val,allow_pickle=False)
-# np.save('Y_test',y_test,allow_pickle=False)
-
-# # Load data
-# x_train,y_train=np.load('X_train.npy',allow_pickle=False),np.load('Y_train.npy',allow_pickle=False)
-# x_val,y_val=np.load('X_val.npy',allow_pickle=False),np.load('Y_val.npy',allow_pickle=False)
-# x_test,y_test=np.load('X_test.npy',allow_pickle=False),np.load('Y_test.npy',allow_pickle=False)
-
-# # Getting the data in required format
-# mlp_x_train=x_train.reshape((x_train.shape[0],x_train.shape[1]*x_train.shape[2]))
-# mlp_x_val=x_val.reshape((x_val.shape[0],x_val.shape[1]*x_val.shape[2]))
-# mlp_x_test=x_test.reshape((x_test.shape[0],x_test.shape[1]*x_test.shape[2]))
-
-# # One hot encoding of class labels
-# y_train=to_categorical(y_train)
-# y_val=to_categorical(y_val)
-# y_test=to_categorical(y_test)
-
-# # MLP train
-# model=Sequential()
-# model.add(Dense(1024,activation='relu',input_shape=(128*9,)))
-# model.add(Dropout(0.5))
-# model.add(Dense(6,activation='softmax'))
-# model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])
-# print(model.summary())
-# model.fit(mlp_x_train,y_train,batch_size=64,epochs=10,verbose=2,validation_data=(mlp_x_val,y_val),shuffle=True)
-
-# # MLP test
-# [test_loss,test_acc]=model.evaluate(mlp_x_test,y_test)
-# print(test_loss,test_acc)
 

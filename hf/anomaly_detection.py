@@ -26,12 +26,15 @@ import numpy as np
 import pandas
 from datetime import datetime, timedelta
 import os
+import numpy as np
+import pymannkendall as mk
+
 pd.set_option("display.precision", 9)
-pd.set_option('display.max_rows', 3000)
+pd.set_option('display.max_rows', 40000)
 pd.options.mode.chained_assignment = None
 
-backtest_mode = 3
-datatype = "ticker3"
+backtest_mode = 2
+datatype = "ticker2"
 
 #base_path = "/home/canercak/Desktop/dev/pltrading"
 base_path = "/home/canercak_gmail_com/pltrading"
@@ -44,8 +47,11 @@ initial_balance = 100
 BUY, SELL, HOLD = 0, 1, 2
 results = {}
 
-conditions = [{'name': 'detect spike1', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True} ]
-EXCLUDE_SYMBOLS = "SCBTC, NCASHBTC,ONEBTC,DOGEBTC,POEBTC,MFTBTC,DREPBTC,COCOSBTC,IOTXBTC,SNGLSBTC,ERDBTC,QKCBTC,TNBBTC,CELRBTC,TUSDBTC,ANKRBTC,HOTBTC,WPRBTC,QSPBTC,SNMBTC,HSRBTC,VENBTC,MITHBTC,CNDBTC,BCCBTC,DOCKBTC,DENTBTC,FUELBTC,BTCBBTC,SALTBTC,KEYBTC,SUBBTC,TCTBTC,CDTBTC,IOSTBTC,TRIGBTC,VETBTC,TROYBTC,NPXSBTC,BTTBTC,SCBBTC,WINBTC,RPXBTC,MODBTC,WINGSBTC,BCNBTC,PHXBTC,XVGBTC,FTMBTC,PAXBTC,ICNBTC,ZILBTC,CLOAKBTC,DNTBTC,TFUELBTC,PHBBTC,CHATBTC,STORMBTC"
+conditions = [
+				{'name': 'MCO PATTERN', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True}
+				#{'name': 'detect spike1', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True}
+			 ]
+EXCLUDE_SYMBOLS = ["SCBTC","NCASHBTC","ONEBTC","DOGEBTC","POEBTC","MFTBTC","DREPBTC","COCOSBTC","IOTXBTC","SNGLSBTC","ERDBTC","QKCBTC","TNBBTC","CELRBTC","TUSDBTC","ANKRBTC","HOTBTC","WPRBTC","QSPBTC","SNMBTC","HSRBTC","VENBTC","MITHBTC","CNDBTC","BCCBTC","DOCKBTC","DENTBTC","FUELBTC","BTCBBTC","SALTBTC","KEYBTC","SUBBTC","TCTBTC","CDTBTC","IOSTBTC","TRIGBTC","VETBTC","TROYBTC","NPXSBTC","BTTBTC","SCBBTC","WINBTC","RPXBTC","MODBTC","WINGSBTC","BCNBTC","PHXBTC","XVGBTC","FTMBTC","PAXBTC","ICNBTC","ZILBTC","CLOAKBTC","DNTBTC","TFUELBTC","PHBBTC","CHATBTC","STORMBTC"]
 
 def add_features(df):
 	df = DataFrame(df)
@@ -54,6 +60,8 @@ def add_features(df):
 	df['qav_sma100'] = df.total_traded_quote_asset_volume.rolling(100).mean()
 	df['qav_sma200'] = df.total_traded_quote_asset_volume.rolling(200).mean()
 	df['qav_sma400'] = df.total_traded_quote_asset_volume.rolling(400).mean()
+	df['qav_sma500'] = df.total_traded_quote_asset_volume.rolling(500).mean()
+	df['qav_sma1000'] = df.total_traded_quote_asset_volume.rolling(1000).mean()
 	df['last_sma50'] = df.last_price.rolling(50).mean()
 	df['last_sma100'] = df.last_price.rolling(100).mean()
 	df['last_sma200'] = df.last_price.rolling(200).mean()
@@ -64,14 +72,21 @@ def add_features(df):
 
 def plot_symbols():
 	dir = os.listdir(path)
-	SYMBOLS = []
-	for sym in dir:
-		if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
-			SYMBOLS.append(sym.split(".csv")[0])
+	SYMBOLS = ["GNTBTC"]
+	# for sym in dir:
+	# 	if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
+	# 		SYMBOLS.append(sym.split(".csv")[0])
 	for symbol in SYMBOLS:
 		df = read_csv(path+symbol+".csv")
 		df = add_features(df)
 		plot_whole(df)
+
+def delete_symbols():
+	for symbol in EXCLUDE_SYMBOLS:
+		try:
+			os.remove(path+symbol+".csv")
+		except:
+			print("ss")
 
 def backtest():
 	if backtest_mode == 1:
@@ -86,17 +101,23 @@ def backtest():
 			df = add_features(df)
 			do_backtest(df,symbol)
 	elif backtest_mode == 2:
-		with open('/Users/apple/Desktop/dev/pltrading/hf/patterns/strategy6_'+datatype+'.json') as json_file:
+		with open('/Users/apple/Desktop/dev/pltrading/hf/patterns.json') as json_file:
 			patterns = json.load(json_file)
 			for pattern in patterns:
-				df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
-				df = add_features(df)
-				do_backtest(df,pattern['symbol'],pattern['end'])
+				if pattern['type'] == "spike_true":
+					df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
+					df = add_features(df)
+					df_x = df
+					do_backtest(df,pattern['symbol'],pattern['end'])
+					#plot_whole(df_x)
 	elif backtest_mode == 3:
-		symbol = "NXSBTC"
-		df = read_csv(path+symbol+".csv")
-		df = add_features(df)
-		do_backtest(df,symbol)
+		#SYMBOLS = ["VIABTC","VITEBTC","STEEMBTC","SYSBTC","GRSBTC","WRXBTC"] #"RDNBTC"]#,"NXSBTC","RDNBTC",
+		SYMBOLS = ["KNCBTC"]#["NXSBTC"]#["VITEBTC"]
+		for symbol in SYMBOLS:
+			df = read_csv(path+symbol+".csv")
+			df = add_features(df)
+			#plot_whole(df)
+			do_backtest(df,symbol)
 
 def do_backtest(df,symbol,end=None):
 	trade_count = 0
@@ -112,19 +133,17 @@ def do_backtest(df,symbol,end=None):
 	entry_price = 0
 	buy_index = 0
 	window_size = 1000
-	last_size = 15
+	last_size = 20
 
 	if backtest_mode==2:
-		df = df.iloc[end - window_size-100:end+window_size]
+		df = df.iloc[end - window_size*1-100:end+window_size*2]
 	elif backtest_mode==3:
 		df_x = df
-		#df = df.iloc[122347:124347]
-		fragment = detect_anomaly(df) #detect_anomaly(df.iloc[11706:11074])
-		fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
-		print(fragment[['symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(2000))
-		print(fragment_sum)
+		df = df.iloc[153068:155168]
+		# fragment = detect_anomaly(df)
+		#detect_anomaly(df.iloc[11706:11074])
 		plot_whole(df_x)
-		#pdb.set_trace()
+		# pdb.set_trace()
 
 	df = df.reset_index()
 	df = df.fillna(0)
@@ -135,42 +154,69 @@ def do_backtest(df,symbol,end=None):
 		current_bid_price = row['best_bid_price']
 		current_tick += 1
 		if i > window_size:
-			fragment = df.iloc[i-window_size:i,:]
-			fragment = detect_anomaly(fragment)
-			fragment = fragment.reset_index()
-			last =  fragment.iloc[-1,:]
-			prev1 =  fragment.iloc[-2,:]
+			last =  df.iloc[i,:]
+			prev1 =  df.iloc[i-2,:]
+			prev25 =  df.iloc[i-25,:]
+			prev50 =  df.iloc[i-50,:]
+			prev100 =  df.iloc[i-100,:]
+			#prev200 =  df.iloc[i-200,:]
+			#prev500 =  df.iloc[i-500,:]
 
-			fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
-			first_n = fragment[:window_size-last_size]
-			last_n = fragment[-last_size:]
+			# diff25 = prev25.qav_sma50 - prev25.qav_sma200
+			# diff50 = prev50.qav_sma50 - prev50.qav_sma200
+			# diff100 = prev100.qav_sma50 - prev100.qav_sma200
+			# diff200 = prev200.qav_sma50 - prev200.qav_sma200
+			# diff200 = prev200.qav_sma50 - prev200.qav_sma200
 
-			conditions[0]['buy_cond'] =(
-										(first_n.label_qav == 0).all() and
-										#kural1 - geriye 2000 bakacaksın. 1000 inanılmaz kayıp veriyor. sakın 1000'e donme.
-										len(fragment_sum) >= 2 and
-										(fragment_sum.label_qav.iloc[0] == 0 and fragment_sum.label_qav.iloc[-1] == 1 ) and
-										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([0, 1, 0]))) == 0 and
-										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 1]))) == 0 and
-										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1]))) == 0 and
-										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 1, 1]))) == 0 and
-										len(search_sequence_numpy(fragment_sum.label_qav.values,np.array([1, 0, 0, 0, 1, 1]))) == 0 and
-										#kural2 - en az 011 veya fazlası patternlar olcak. Kesinlikle 01 olamaz. Kesinlikle 01 olur obur turlu geç alıp kaybediyor. Onemlş lan arkadan nasıl geldiği
-										(fragment_sum[fragment_sum['label_qav'] == 1].change_qav).sum() > 10 and
-										#kural3 - 1'lerin change_qav toplamıu 4'ten buyuk olcak. Onceden 5'ti onemli yerleri kacırıyor. 4 olamaz. 5ten bile fazla olması lazım
-										# trendline(last_20[last_20['label_qav'] == 1].total_traded_quote_asset_volume) > 0 and
-										# #kural4 - trendline yuksek olcak
-										(fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() > 0 and
-										(fragment_sum[fragment_sum['label_qav'] == 1].change_price).sum() < 10 and
-										#kural5 - 1'lerin change_price toplamıu 0.5'den buyuk 10'dan kucuk olcak. 1 dedin geç aldı 0.5 dedin geç aldı en iyisi 0. onemli olan change_qav
-										fragment_sum[fragment_sum['label_qav'] == 1].change_qav.max() > fragment_sum[fragment_sum['label_qav'] == 0].change_qav.max()
-										#kural6 - onemli. ticker2storj188785 ticker3sys125169 gibi durumlardan korunmak için.
-										#(not fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_decreasing)
-										#kural7 - change_qav azalıyor olmicak. Bu kuralı kapatıyorum. sortun yaratıyor. ticker3dnt14569 gibi durumlar oluyor.
-									   )
+			diffx1 = last.qav_sma500 - last.qav_sma1000
+			diffx2 = prev50.qav_sma500  - prev50.qav_sma1000
+			diffx3 = prev100.qav_sma500  - prev100.qav_sma1000
+			#diffx4 = prev200.qav_sma500  - prev200.qav_sma1000
+			#diffx5 = prev500.qav_sma500  - prev500.qav_sma1000
 
-			conditions[0]['sell_cond'] =(last['last_sma100'] < prev1['last_sma100'])
-			#spike için en uygunu 100luk test ettim onayladım. Hep daha fazal kazanıyor hem aha az kaybediyor.
+			first_check =   (
+								last.qav_sma500 > last.qav_sma1000 and
+								prev50.qav_sma500 > prev50.qav_sma1000 and
+								prev100.qav_sma500 > prev100.qav_sma1000
+								#diffx1 > 0.1 and ###buda yanıltıcı!!!!!
+								#diffx1 < 1 ###yanıltıcı!!!!!
+
+							)
+
+			# if last['index'] == 114395:
+			#  	pdb.set_trace()
+
+			if (first_check  == True and conditions[0]['buy_mode'] == True):
+				fragment = df.iloc[i-window_size:i,:]
+				fragment = detect_anomaly(fragment)
+				fragment = fragment.reset_index()
+				last =  fragment.iloc[-1,:]
+				prev1 =  fragment.iloc[-2,:]
+				first_n = fragment[:window_size-last_size]
+				last_n = fragment[-last_size:]
+				mk_test = mk.original_test(fragment.change_qav.to_numpy())
+				fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
+
+				conditions[0]['buy_cond'] =(
+											(first_n.label_qav == 0).all() and
+											fragment_sum[fragment_sum['label_qav'] == 1].change_qav.sum() > 5 and
+											fragment_sum[fragment_sum['label_qav'] == 1].change_qav.sum() < 15 and
+											(fragment_sum[fragment_sum['label_qav'] == 1].change_qav >1).all() and
+											(fragment_sum[fragment_sum['label_qav'] == 1].change_qav <10).all() and
+											(
+												(fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_increasing) or
+												(fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_decreasing and (fragment[fragment['label_qav'] == 1].change_qav > 0).all())
+											) and
+											mk_test.z > 1 and
+											len(fragment_sum) >= 3 and
+											fragment_sum.label_qav.iloc[0] == 0 and
+				 							fragment_sum.label_qav.iloc[-1] == 1 and
+				 							fragment_sum.label_qav.iloc[-2] == 1
+										   )
+			elif (conditions[0]['buy_mode'] == False):
+					conditions[0]['sell_cond'] = (last['last_sma600'] < prev1['last_sma600'])
+			else:
+				continue
 
 			for ic, cond in enumerate(conditions):
 				if cond['buy_mode'] and cond['buy_cond']:
@@ -182,7 +228,13 @@ def do_backtest(df,symbol,end=None):
 						printLog("##### TRADE " +  str(cond['trade_count']) + " #####")
 						printLog("BUY: " +symbol+" for "+ str(cond['entry_price']) + " at " +  str(last.date) + " - index: " +  str(last['index']))
 						printLog(fragment[['index','date','symbol','last_price', 'total_traded_quote_asset_volume', 'label_qav', 'score_qav','change_qav','change_price']].tail(100))
+						printLog(mk.original_test(fragment.change_qav.to_numpy()))
 						printLog(fragment_sum)
+						printLog("diffx1: " + str(diffx1))
+						printLog("last.qav_sma500: " + str(last.qav_sma500))
+						printLog("last.qav_sma1000: " + str(last.qav_sma1000))
+						printLog("prev100.qav_sma500: " + str(prev100.qav_sma500))
+						printLog("prev100.qav_sma1000: " + str(prev100.qav_sma1000))
 						#pdb.set_trace()
 				elif not cond['buy_mode'] and cond['sell_cond']:
 					printLog("CONDITION " + str(ic+1) +" IS SELLING....")
@@ -198,17 +250,17 @@ def do_backtest(df,symbol,end=None):
 				else:
 					conditions[ic]['action'] = HOLD
 
-			if (current_tick > len(df)-1):
-				printLog("*********TOTAL RESULTS*************************")
-				for ic, cond in enumerate(conditions):
-					printLog("SYMBOL: "+ symbol)
-					printLog("CONDITION NUMBER: "+ str(ic))
-					printLog("TOTAL BALANCE: "+ str(cond['balance']))
-					printLog("TRADE COUNT: "+ str(cond['trade_count']))
-				printLog("**********************************")
+		if (current_tick > len(df)-1):
+			printLog("*********TOTAL RESULTS*************************")
+			for ic, cond in enumerate(conditions):
+				printLog("SYMBOL: "+ symbol)
+				printLog("CONDITION NUMBER: "+ str(ic))
+				printLog("TOTAL BALANCE: "+ str(cond['balance']))
+				printLog("TRADE COUNT: "+ str(cond['trade_count']))
+			printLog("**********************************")
 
-			if i % 1000 == 0:
-				printLog(symbol+"-"+str(row['index']))
+		if i % 1000 == 0:
+			printLog(symbol+"-"+str(row['index']))
 
 def plot_buy_sell(trade_history):
 	closes = [data[2] for data in trade_history]
@@ -255,14 +307,16 @@ def plot_whole(df):
 	fig, axes = plt.subplots(nrows=2, ncols=1)
 	df.total_traded_quote_asset_volume.plot(ax=axes[0] , color="blue", style='.-')
 
-	df.qav_sma50.plot(ax=axes[0], color="red")
-	df.qav_sma100.plot(ax=axes[0], color="orange")
-	df.qav_sma200.plot(ax=axes[0], color="brown")
+	# df.qav_sma50.plot(ax=axes[0], color="red")
+	# df.qav_sma100.plot(ax=axes[0], color="orange")
+	df.qav_sma500.plot(ax=axes[0], color="purple")
+	df.qav_sma1000.plot(ax=axes[0], color="brown")
 
 	df.last_price.plot(ax=axes[1], style='.-')
 	df.last_sma100.plot(ax=axes[1], color="yellow")
 	df.last_sma200.plot(ax=axes[1], color="purple")
 	df.last_sma600.plot(ax=axes[1], color="black")
+	df.last_sma1000.plot(ax=axes[1], color="green")
 	plt.title(df.iloc[-1].symbol)
 	plt.show()
 
@@ -333,7 +387,6 @@ def printLog(*args, **kwargs):
 
 
 if __name__ == '__main__':
-	#plot_symbols()
+	#$plot_symbols()
 	backtest()
-
 
