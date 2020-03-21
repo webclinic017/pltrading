@@ -1,5 +1,5 @@
 [
-    {"symbol":"NAVBTC","data":"ticker2","end":114395,"certainty":1,"notes":"SADECE BUNU KOPYALA YETER."},
+    {"symbol":"NAVBTC","data":"ticker2","end":114395,"type":"spike_true","certainty":1,"notes":"SADECE BUNU KOPYALA YETER."},
     {"symbol":"GNTBTC","data":"ticker4","end":140193,"type":"spike_true","notes":"SADECE BUNU KOPYALA YETER."},
     {"symbol":"CVCBTC","data":"ticker3","end":36746,"type":"spike_true","certainty":2}
 ]

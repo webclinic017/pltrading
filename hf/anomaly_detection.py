@@ -34,7 +34,7 @@ pd.set_option('display.max_rows', 40000)
 pd.options.mode.chained_assignment = None
 
 backtest_mode = 2
-datatype = "ticker2"
+datatype = "ticker3"
 
 #base_path = "/home/canercak/Desktop/dev/pltrading"
 base_path = "/home/canercak_gmail_com/pltrading"
@@ -104,15 +104,15 @@ def backtest():
 		with open('/Users/apple/Desktop/dev/pltrading/hf/patterns.json') as json_file:
 			patterns = json.load(json_file)
 			for pattern in patterns:
-				if pattern['type'] == "spike_true":
-					df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
-					df = add_features(df)
-					df_x = df
-					do_backtest(df,pattern['symbol'],pattern['end'])
-					#plot_whole(df_x)
+				#if pattern['type'] == "spike_true":
+				df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
+				df = add_features(df)
+				df_x = df
+				do_backtest(df,pattern['symbol'],pattern['end'])
+				#plot_whole(df_x)
 	elif backtest_mode == 3:
 		#SYMBOLS = ["VIABTC","VITEBTC","STEEMBTC","SYSBTC","GRSBTC","WRXBTC"] #"RDNBTC"]#,"NXSBTC","RDNBTC",
-		SYMBOLS = ["KNCBTC"]#["NXSBTC"]#["VITEBTC"]
+		SYMBOLS = ["POLYBTC"]#["NXSBTC"]#["VITEBTC"]
 		for symbol in SYMBOLS:
 			df = read_csv(path+symbol+".csv")
 			df = add_features(df)
@@ -139,10 +139,10 @@ def do_backtest(df,symbol,end=None):
 		df = df.iloc[end - window_size*1-100:end+window_size*2]
 	elif backtest_mode==3:
 		df_x = df
-		df = df.iloc[153068:155168]
+		#df = df.iloc[153068:155168]
 		# fragment = detect_anomaly(df)
 		#detect_anomaly(df.iloc[11706:11074])
-		plot_whole(df_x)
+		#plot_whole(df_x)
 		# pdb.set_trace()
 
 	df = df.reset_index()
@@ -159,28 +159,22 @@ def do_backtest(df,symbol,end=None):
 			prev25 =  df.iloc[i-25,:]
 			prev50 =  df.iloc[i-50,:]
 			prev100 =  df.iloc[i-100,:]
-			#prev200 =  df.iloc[i-200,:]
-			#prev500 =  df.iloc[i-500,:]
-
-			# diff25 = prev25.qav_sma50 - prev25.qav_sma200
-			# diff50 = prev50.qav_sma50 - prev50.qav_sma200
-			# diff100 = prev100.qav_sma50 - prev100.qav_sma200
-			# diff200 = prev200.qav_sma50 - prev200.qav_sma200
-			# diff200 = prev200.qav_sma50 - prev200.qav_sma200
+			prev200 =  df.iloc[i-200,:]
 
 			diffx1 = last.qav_sma500 - last.qav_sma1000
 			diffx2 = prev50.qav_sma500  - prev50.qav_sma1000
 			diffx3 = prev100.qav_sma500  - prev100.qav_sma1000
-			#diffx4 = prev200.qav_sma500  - prev200.qav_sma1000
-			#diffx5 = prev500.qav_sma500  - prev500.qav_sma1000
+			diffx4 = prev200.qav_sma500  - prev200.qav_sma1000
 
 			first_check =   (
 								last.qav_sma500 > last.qav_sma1000 and
 								prev50.qav_sma500 > prev50.qav_sma1000 and
-								prev100.qav_sma500 > prev100.qav_sma1000
+								prev100.qav_sma500 > prev100.qav_sma1000 and
+								prev200.qav_sma500 > prev200.qav_sma1000 and
+								last.qav_sma500 > prev50.qav_sma500  > prev100.qav_sma500 > prev200.qav_sma500 and
+								diffx1 > diffx2 > diffx3 > diffx4
 								#diffx1 > 0.1 and ###buda yanıltıcı!!!!!
 								#diffx1 < 1 ###yanıltıcı!!!!!
-
 							)
 
 			# if last['index'] == 114395:
