@@ -1,0 +1,12 @@
+[
+    {"symbol":"BLZBTC","data":"ticker5","end":38029,"type":"spike_true"},
+    {"symbol":"GASBTC","data":"ticker5","end":99572,"type":"spike_true"},
+    {"symbol":"BATBTC","data":"ticker5","end":315772,"type":"spike_true"},
+    {"symbol":"EVXBTC","data":"ticker5","end":68935,"type":"spike_true"},
+    {"symbol":"WABIBTC","data":"ticker5","end":96335,"type":"spike_true"},
+    {"symbol":"BANDBTC","data":"ticker5","end":133572,"type":"spike_true"},
+    {"symbol":"OAXBTC","data":"ticker5","end":197267,"type":"spike_true"},
+	{"symbol":"ARKBTC","data":"ticker1","end":343525,"type":"trend_true","certainty":1},
+	{"symbol":"ONGBTC","data":"ticker1","end":72405,"type":"trend_true","certainty":1},
+	{"symbol":"BANDBTC","data":"ticker2","end":183661,"type":"spike_true","certainty":1}
+]

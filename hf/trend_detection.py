@@ -33,7 +33,7 @@ pd.set_option("display.precision", 9)
 pd.set_option('display.max_rows', 40000)
 pd.options.mode.chained_assignment = None
 
-backtest_mode = 2
+backtest_mode = 1
 datatype = "ticker3"
 
 #base_path = "/home/canercak/Desktop/dev/pltrading"
@@ -48,10 +48,9 @@ BUY, SELL, HOLD = 0, 1, 2
 results = {}
 
 conditions = [
-				{'name': 'MCO PATTERN', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True}
-				#{'name': 'detect spike1', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True}
-			 ]
-EXCLUDE_SYMBOLS = ["SCBTC","NCASHBTC","ONEBTC","DOGEBTC","POEBTC","MFTBTC","DREPBTC","COCOSBTC","IOTXBTC","SNGLSBTC","ERDBTC","QKCBTC","TNBBTC","CELRBTC","TUSDBTC","ANKRBTC","HOTBTC","WPRBTC","QSPBTC","SNMBTC","HSRBTC","VENBTC","MITHBTC","CNDBTC","BCCBTC","DOCKBTC","DENTBTC","FUELBTC","BTCBBTC","SALTBTC","KEYBTC","SUBBTC","TCTBTC","CDTBTC","IOSTBTC","TRIGBTC","VETBTC","TROYBTC","NPXSBTC","BTTBTC","SCBBTC","WINBTC","RPXBTC","MODBTC","WINGSBTC","BCNBTC","PHXBTC","XVGBTC","FTMBTC","PAXBTC","ICNBTC","ZILBTC","CLOAKBTC","DNTBTC","TFUELBTC","PHBBTC","CHATBTC","STORMBTC"]
+				{'name': 'TREND PATTERN', 'entry_price': 0, 'action': HOLD, 'trade_count': 0, 'balance': initial_balance, 'buy_mode': True}
+		 	 ]
+EXCLUDE_SYMBOLS = ["MBL","SCBTC","NCASHBTC","ONEBTC","DOGEBTC","POEBTC","MFTBTC","DREPBTC","COCOSBTC","IOTXBTC","SNGLSBTC","ERDBTC","QKCBTC","TNBBTC","CELRBTC","TUSDBTC","ANKRBTC","HOTBTC","WPRBTC","QSPBTC","SNMBTC","HSRBTC","VENBTC","MITHBTC","CNDBTC","BCCBTC","DOCKBTC","DENTBTC","FUELBTC","BTCBBTC","SALTBTC","KEYBTC","SUBBTC","TCTBTC","CDTBTC","IOSTBTC","TRIGBTC","VETBTC","TROYBTC","NPXSBTC","BTTBTC","SCBBTC","WINBTC","RPXBTC","MODBTC","WINGSBTC","BCNBTC","PHXBTC","XVGBTC","FTMBTC","PAXBTC","ICNBTC","ZILBTC","CLOAKBTC","DNTBTC","TFUELBTC","PHBBTC","CHATBTC","STORMBTC"]
 
 def add_features(df):
 	df = DataFrame(df)
@@ -72,10 +71,10 @@ def add_features(df):
 
 def plot_symbols():
 	dir = os.listdir(path)
-	SYMBOLS = ["GNTBTC"]
-	# for sym in dir:
-	# 	if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
-	# 		SYMBOLS.append(sym.split(".csv")[0])
+	SYMBOLS = []
+	for sym in dir:
+		if ".py" not in sym and ".DS_Store" not in sym and sym.split('.csv')[0] not in EXCLUDE_SYMBOLS:
+			SYMBOLS.append(sym.split(".csv")[0])
 	for symbol in SYMBOLS:
 		df = read_csv(path+symbol+".csv")
 		df = add_features(df)
@@ -101,18 +100,16 @@ def backtest():
 			df = add_features(df)
 			do_backtest(df,symbol)
 	elif backtest_mode == 2:
-		with open('/Users/apple/Desktop/dev/pltrading/hf/patterns.json') as json_file:
+		with open('/Users/apple/Desktop/dev/pltrading/hf/patterns/test_trend_patterns.json') as json_file:
 			patterns = json.load(json_file)
 			for pattern in patterns:
-				#if pattern['type'] == "spike_true":
 				df = pd.read_csv("/Users/apple/Desktop/dev/pltrading/data/" +  pattern['data'] +"/"+pattern['symbol']+".csv")
 				df = add_features(df)
 				df_x = df
 				do_backtest(df,pattern['symbol'],pattern['end'])
 				#plot_whole(df_x)
 	elif backtest_mode == 3:
-		#SYMBOLS = ["VIABTC","VITEBTC","STEEMBTC","SYSBTC","GRSBTC","WRXBTC"] #"RDNBTC"]#,"NXSBTC","RDNBTC",
-		SYMBOLS = ["POLYBTC"]#["NXSBTC"]#["VITEBTC"]
+		SYMBOLS = ["OAXBTC"]
 		for symbol in SYMBOLS:
 			df = read_csv(path+symbol+".csv")
 			df = add_features(df)
@@ -133,17 +130,16 @@ def do_backtest(df,symbol,end=None):
 	entry_price = 0
 	buy_index = 0
 	window_size = 1000
-	last_size = 20
+	last_size = 50
 
 	if backtest_mode==2:
 		df = df.iloc[end - window_size*1-100:end+window_size*2]
 	elif backtest_mode==3:
 		df_x = df
-		#df = df.iloc[153068:155168]
+		df = df.iloc[195267:199267]
 		# fragment = detect_anomaly(df)
 		#detect_anomaly(df.iloc[11706:11074])
 		#plot_whole(df_x)
-		# pdb.set_trace()
 
 	df = df.reset_index()
 	df = df.fillna(0)
@@ -160,6 +156,7 @@ def do_backtest(df,symbol,end=None):
 			prev50 =  df.iloc[i-50,:]
 			prev100 =  df.iloc[i-100,:]
 			prev200 =  df.iloc[i-200,:]
+			prev500 =  df.iloc[i-500,:]
 
 			diffx1 = last.qav_sma500 - last.qav_sma1000
 			diffx2 = prev50.qav_sma500  - prev50.qav_sma1000
@@ -167,19 +164,19 @@ def do_backtest(df,symbol,end=None):
 			diffx4 = prev200.qav_sma500  - prev200.qav_sma1000
 
 			first_check =   (
+								last['last_sma600']  > prev100['last_sma600'] and
+								last['last_sma600'] > prev500['last_sma600'] and
 								last.qav_sma500 > last.qav_sma1000 and
 								prev50.qav_sma500 > prev50.qav_sma1000 and
 								prev100.qav_sma500 > prev100.qav_sma1000 and
 								prev200.qav_sma500 > prev200.qav_sma1000 and
 								last.qav_sma500 > prev50.qav_sma500  > prev100.qav_sma500 > prev200.qav_sma500 and
-								diffx1 > diffx2 > diffx3 > diffx4
-								#diffx1 > 0.1 and ###buda yanıltıcı!!!!!
-								#diffx1 < 1 ###yanıltıcı!!!!!
+								diffx1 > diffx2 > diffx3 > diffx4 and
+								diffx1 > 0.3 and ###buda yanıltıcı!!!!!
+								diffx1 < 1 ###yanıltıcı!!!!!
 							)
-
 			# if last['index'] == 114395:
 			#  	pdb.set_trace()
-
 			if (first_check  == True and conditions[0]['buy_mode'] == True):
 				fragment = df.iloc[i-window_size:i,:]
 				fragment = detect_anomaly(fragment)
@@ -192,20 +189,19 @@ def do_backtest(df,symbol,end=None):
 				fragment_sum = fragment.groupby(['score_qav', 'label_qav'], as_index=False, sort=False)[[ "change_qav", "change_price"]].sum()
 
 				conditions[0]['buy_cond'] =(
-											(first_n.label_qav == 0).all() and
-											fragment_sum[fragment_sum['label_qav'] == 1].change_qav.sum() > 5 and
-											fragment_sum[fragment_sum['label_qav'] == 1].change_qav.sum() < 15 and
-											(fragment_sum[fragment_sum['label_qav'] == 1].change_qav >1).all() and
-											(fragment_sum[fragment_sum['label_qav'] == 1].change_qav <10).all() and
-											(
-												(fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_increasing) or
-												(fragment_sum[fragment_sum['label_qav'] == 1].change_qav.is_monotonic_decreasing and (fragment[fragment['label_qav'] == 1].change_qav > 0).all())
-											) and
+											(fragment_sum[fragment_sum['label_qav'] == 1].change_qav < 3).all() and
 											mk_test.z > 1 and
-											len(fragment_sum) >= 3 and
+											mk_test.z < 10 and
+											mk_test.Tau < 0.1 and
+											fragment_sum[fragment_sum['label_qav'] == 1].change_qav.sum() > 4 and
+											fragment_sum[fragment_sum['label_qav'] == 1].change_qav.sum() < 10 and
 											fragment_sum.label_qav.iloc[0] == 0 and
 				 							fragment_sum.label_qav.iloc[-1] == 1 and
-				 							fragment_sum.label_qav.iloc[-2] == 1
+				 							fragment_sum.label_qav.iloc[-2] == 1 and
+				 							(fragment_sum[fragment_sum['label_qav'] == 0].change_qav < fragment_sum[fragment_sum['label_qav'] == 1].change_qav.max()).all() and
+				 							fragment_sum.iloc[-1].change_price + fragment_sum.iloc[-2].change_price > 0 and
+				 							fragment_sum.change_price.sum() > 0 and
+				 							(last_n.label_qav == 1).count() < 50
 										   )
 			elif (conditions[0]['buy_mode'] == False):
 					conditions[0]['sell_cond'] = (last['last_sma600'] < prev1['last_sma600'])
@@ -229,6 +225,7 @@ def do_backtest(df,symbol,end=None):
 						printLog("last.qav_sma1000: " + str(last.qav_sma1000))
 						printLog("prev100.qav_sma500: " + str(prev100.qav_sma500))
 						printLog("prev100.qav_sma1000: " + str(prev100.qav_sma1000))
+						#plot_whole(df)
 						#pdb.set_trace()
 				elif not cond['buy_mode'] and cond['sell_cond']:
 					printLog("CONDITION " + str(ic+1) +" IS SELLING....")
@@ -315,7 +312,6 @@ def plot_whole(df):
 	plt.show()
 
 def plot_trades(df):
-	pdb.set_trace()
 	df.plot(x='close', y='mark',style='.-',linestyle='-', marker='o', markerfacecolor='black')
 	trade_history.plot(x='action', y='current_price',linestyle='-', marker='o', markerfacecolor='black', plot_data_points= True)
 
@@ -381,6 +377,6 @@ def printLog(*args, **kwargs):
 
 
 if __name__ == '__main__':
-	#$plot_symbols()
+	#plot_symbols()
 	backtest()
 
